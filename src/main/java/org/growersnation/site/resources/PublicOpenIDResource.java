@@ -86,7 +86,7 @@ public class PublicOpenIDResource extends BaseResource {
 
       // The OpenId server will use this endpoint to provide authentication
       // Parts of this may be shown to the user
-      String returnToUrl = "http://http://ec2-46-137-56-2.eu-west-1.compute.amazonaws.com/api/openid/verify";
+      String returnToUrl = "http://ec2-46-137-56-2.eu-west-1.compute.amazonaws.com/openid/verify";
 
       // Perform discovery on the user-supplied identifier
       List discoveries = manager.discover(identifier);
