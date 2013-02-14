@@ -12,8 +12,8 @@ echo "Pulling the latest code from origin master"
 git pull
 
 # Stop the existing service (this may take some time so we do it before the Maven build)
-echo Performing a soft kill of the existing process
-pkill -1 site-develop-SNAPSHOT
+echo Performing a soft kill (-2) of the existing process
+pkill -2 site-develop-SNAPSHOT
 
 # Build with Maven
 echo Maven build the new code
