@@ -16,7 +16,7 @@
                                                                   title="Login with OpenID">Login with OpenID</a></h1>
             </div>
             <div class="entry">
-                <a href="/private/home">Access abc private info (protected with OpenId) available to public</a>
+                <a href="/private/home">Access def private info (protected with OpenId) available to public</a>
 
                 <a href="/private/admin">Access private info (protected with OpenId) available to Administrators</a>
 
