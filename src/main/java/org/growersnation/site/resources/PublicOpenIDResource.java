@@ -93,12 +93,19 @@ public class PublicOpenIDResource extends BaseResource {
 
       // The OpenId server will use this endpoint to provide authentication
       // Parts of this may be shown to the user
-      String returnToUrl = String.format(
-        "http://%s:%d/openid/verify",
-        request.getServerName(),
-        request.getServerPort());
+      final String returnToUrl;
+      if (request.getServerPort() == 80) {
+        returnToUrl = String.format(
+          "http://%s/openid/verify",
+          request.getServerName());
+      } else {
+        returnToUrl = String.format(
+          "http://%s:%d/openid/verify",
+          request.getServerName(),
+          request.getServerPort());
+      }
 
-      log.debug("Return to URL '{}'",returnToUrl);
+      log.debug("Return to URL '{}'", returnToUrl);
 
       // Perform discovery on the user-supplied identifier
       List discoveries = manager.discover(identifier);
@@ -137,11 +144,11 @@ public class PublicOpenIDResource extends BaseResource {
       return Response.seeOther(URI.create(authReq.getDestinationUrl(true))).build();
 
     } catch (MessageException e1) {
-      log.error("MessageException:",e1);
+      log.error("MessageException:", e1);
     } catch (DiscoveryException e1) {
-      log.error("DiscoveryException:",e1);
+      log.error("DiscoveryException:", e1);
     } catch (ConsumerException e1) {
-      log.error("ConsumerException:",e1);
+      log.error("ConsumerException:", e1);
     }
     return Response.ok().build();
   }
@@ -174,7 +181,7 @@ public class PublicOpenIDResource extends BaseResource {
       if (queryString != null && queryString.length() > 0) {
         receivingURL.append("?").append(request.getQueryString());
       }
-      log.debug("Receiving URL = '{}",receivingURL.toString());
+      log.debug("Receiving URL = '{}", receivingURL.toString());
 
       // Extract the parameters from the authentication response
       // (which comes in as a HTTP request from the OpenID provider)
@@ -203,7 +210,7 @@ public class PublicOpenIDResource extends BaseResource {
           user.setFirstName(extractFirstName(authSuccess));
           user.setLastName(extractLastName(authSuccess));
         }
-        log.info("Extracted a {}",user);
+        log.info("Extracted a {}", user);
 
         // Bind the authorities to the user
         Set<Authority> authorities = Sets.newHashSet();
@@ -230,7 +237,7 @@ public class PublicOpenIDResource extends BaseResource {
       }
     } catch (OpenIDException e) {
       // present error to the user
-      log.error("OpenIDException",e);
+      log.error("OpenIDException", e);
     }
 
     // Must have failed to be here
