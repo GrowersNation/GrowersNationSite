@@ -93,8 +93,10 @@ public class PublicOpenIDResource extends BaseResource {
 
       // The OpenId server will use this endpoint to provide authentication
       // Parts of this may be shown to the user
-      //String returnToUrl = "http://ec2-46-137-56-2.eu-west-1.compute.amazonaws.com/openid/verify";
-      String returnToUrl = "http://localhost:9090/openid/verify";
+      String returnToUrl = String.format(
+        "http://%s:%d/openid/verify",
+        request.getServerName(),
+        request.getServerPort());
 
       // Perform discovery on the user-supplied identifier
       List discoveries = manager.discover(identifier);
@@ -150,10 +152,6 @@ public class PublicOpenIDResource extends BaseResource {
   @GET
   @Path("/verify")
   public View verifyOpenIdServerResponse() {
-
-    if (true) {
-    throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
 
     BaseModel model = new BaseModel();
 
