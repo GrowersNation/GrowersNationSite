@@ -43,7 +43,7 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
     }
 
     // Use the default
-    log.error(runtime.getMessage());
+    log.error(runtime.getMessage(),runtime);
     return defaultResponse;
 
   }

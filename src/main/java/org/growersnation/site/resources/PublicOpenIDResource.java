@@ -98,6 +98,8 @@ public class PublicOpenIDResource extends BaseResource {
         request.getServerName(),
         request.getServerPort());
 
+      log.debug("Return to URL '{}'",returnToUrl);
+
       // Perform discovery on the user-supplied identifier
       List discoveries = manager.discover(identifier);
 
@@ -135,11 +137,11 @@ public class PublicOpenIDResource extends BaseResource {
       return Response.seeOther(URI.create(authReq.getDestinationUrl(true))).build();
 
     } catch (MessageException e1) {
-      e1.printStackTrace();
+      log.error("MessageException:",e1);
     } catch (DiscoveryException e1) {
-      e1.printStackTrace();
+      log.error("DiscoveryException:",e1);
     } catch (ConsumerException e1) {
-      e1.printStackTrace();
+      log.error("ConsumerException:",e1);
     }
     return Response.ok().build();
   }
@@ -172,6 +174,7 @@ public class PublicOpenIDResource extends BaseResource {
       if (queryString != null && queryString.length() > 0) {
         receivingURL.append("?").append(request.getQueryString());
       }
+      log.debug("Receiving URL = '{}",receivingURL.toString());
 
       // Extract the parameters from the authentication response
       // (which comes in as a HTTP request from the OpenID provider)
@@ -222,10 +225,12 @@ public class PublicOpenIDResource extends BaseResource {
         InMemoryUserCache.INSTANCE.put(session.getId(), user);
 
         return new PublicFreemarkerView<BaseModel>("common/home.ftl", model);
+      } else {
+        log.debug("Failed verification");
       }
     } catch (OpenIDException e) {
       // present error to the user
-      e.printStackTrace();
+      log.error("OpenIDException",e);
     }
 
     // Must have failed to be here
