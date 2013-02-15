@@ -7,8 +7,9 @@ import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.server.impl.inject.AbstractHttpContextInjectable;
 import com.yammer.dropwizard.auth.AuthenticationException;
 import com.yammer.dropwizard.auth.Authenticator;
-import com.yammer.dropwizard.logging.Log;
 import org.growersnation.site.model.Authority;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Cookie;
@@ -28,7 +29,7 @@ import java.util.Set;
  */
 class OpenIDRestrictedToInjectable<T> extends AbstractHttpContextInjectable<T> {
 
-  private static final Log LOG = Log.forClass(OpenIDRestrictedToInjectable.class);
+  private static final Logger log = LoggerFactory.getLogger(OpenIDRestrictedToInjectable.class);
 
   private final Authenticator<OpenIDCredentials, T> authenticator;
   private final String realm;
@@ -83,9 +84,9 @@ class OpenIDRestrictedToInjectable<T> extends AbstractHttpContextInjectable<T> {
         }
       }
     } catch (IllegalArgumentException e) {
-      OpenIDRestrictedToProvider.LOG.debug(e, "Error decoding credentials");
+      log.warn("Error decoding credentials",e);
     } catch (AuthenticationException e) {
-      OpenIDRestrictedToProvider.LOG.warn(e, "Error authenticating credentials");
+      log.warn("Error authenticating credentials",e);
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
 

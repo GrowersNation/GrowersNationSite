@@ -26,9 +26,6 @@ logging:
 
   # ...
 
-
-  LONDON20
-
   # Settings for logging to stdout.
   console:
 

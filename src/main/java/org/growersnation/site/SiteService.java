@@ -1,8 +1,8 @@
 package org.growersnation.site;
 
-import com.google.common.cache.CacheBuilderSpec;
 import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.bundles.AssetsBundle;
+import com.yammer.dropwizard.assets.AssetsBundle;
+import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.views.ViewBundle;
 import com.yammer.dropwizard.views.ViewMessageBodyWriter;
@@ -35,18 +35,18 @@ public class SiteService extends Service<SiteConfiguration> {
     new SiteService().run(args);
   }
 
-  private SiteService() {
-    super("store");
-    CacheBuilderSpec cacheBuilderSpec = (System.getenv("FILE_CACHE_ENABLED") == null) ? CacheBuilderSpec.parse("maximumSize=0") : AssetsBundle.DEFAULT_CACHE_SPEC;
-    addBundle(new AssetsBundle("/assets/images", cacheBuilderSpec, "/images"));
-    addBundle(new AssetsBundle("/assets/jquery", cacheBuilderSpec, "/jquery"));
+  @Override
+  public void initialize(Bootstrap<SiteConfiguration> siteConfigurationBootstrap) {
+
+    // Bundles
+    siteConfigurationBootstrap.addBundle(new ViewBundle());
+    siteConfigurationBootstrap.addBundle(new AssetsBundle("/assets/images", "/images"));
+    siteConfigurationBootstrap.addBundle(new AssetsBundle("/assets/jquery", "/jquery"));
 
   }
 
   @Override
-  protected void initialize(SiteConfiguration configuration,
-                            Environment environment) {
-
+  public void run(SiteConfiguration siteConfiguration, Environment environment) throws Exception {
     // Configure authenticator
     OpenIDAuthenticator authenticator = new OpenIDAuthenticator();
 
@@ -62,9 +62,6 @@ public class SiteService extends Service<SiteConfiguration> {
 
     // Session handler
     environment.setSessionHandler(new SessionHandler());
-
-    // Bundles
-    addBundle(new ViewBundle());
 
   }
 
