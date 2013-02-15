@@ -6,17 +6,26 @@
 </head>
 
 <body>
-<div>
 <#include "../includes/common/header.ftl">
+<!-- content start -->
+<div id="content" class="clearfix">
+    <div class="post">
+        <div class="post_header_bg"><h1 class="post-title"><a href="http://www.growers-nation.org/"
+                                                              title="Private Data">Private Data</a></h1>
+        </div>
+        <div class="entry">
 
-  <h1>Private data</h1>
-  <p>Congratulations! You authenticated through OpenId</p>
-  <p>This can be seen by administrators and authenticated public</p>
-  <p>Try to get to the <a href="/private/admin">admin page</a></p>
+            <p>Congratulations! You authenticated through OpenId</p>
+            <p>This can be seen by administrators and authenticated public</p>
+            <p>Try to get to the <a href="/private/admin">admin page</a></p>
+        </div>
+        <div class="endline"></div>
+    </div>
 
-<#include "../includes/common/footer.ftl">
+<#--<#include "../includes/common/social.ftl">-->
 
 </div>
+<!-- content end -->
 
 <#include "../includes/common/cdn-scripts.ftl">
 

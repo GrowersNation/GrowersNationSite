@@ -3,6 +3,11 @@ package org.growersnation.site.resources;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import com.yammer.dropwizard.views.View;
+import org.growersnation.site.auth.InMemoryUserCache;
+import org.growersnation.site.model.Authority;
+import org.growersnation.site.model.BaseModel;
+import org.growersnation.site.model.User;
+import org.growersnation.site.views.PublicFreemarkerView;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
@@ -17,17 +22,16 @@ import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
-import org.growersnation.site.auth.InMemoryUserCache;
-import org.growersnation.site.model.Authority;
-import org.growersnation.site.model.BaseModel;
-import org.growersnation.site.model.User;
-import org.growersnation.site.views.PublicFreemarkerView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>Resource to provide the following to application:</p>
@@ -40,6 +44,8 @@ import java.util.List;
 @Path("/openid")
 @Produces(MediaType.TEXT_HTML)
 public class PublicOpenIDResource extends BaseResource {
+
+  private static final Logger log = LoggerFactory.getLogger(PublicOpenIDResource.class);
 
   private static final String OPENID_DISCOVERY_KEY = "openid-discovery-key";
   private final static String YAHOO_ENDPOINT = "https://me.yahoo.com";
@@ -74,11 +80,12 @@ public class PublicOpenIDResource extends BaseResource {
    * Handles the authentication request from the user after they select their OpenId server
    *
    * @param identifier The identifier for the OpenId server
+   *
    * @return A redirection or a form view containing user-specific permissions
    */
   @POST
   public Response authenticationRequest(
-    @QueryParam("identifier")
+    @FormParam("identifier")
     String identifier
   ) {
 
@@ -86,7 +93,8 @@ public class PublicOpenIDResource extends BaseResource {
 
       // The OpenId server will use this endpoint to provide authentication
       // Parts of this may be shown to the user
-      String returnToUrl = "http://ec2-46-137-56-2.eu-west-1.compute.amazonaws.com/openid/verify";
+      //String returnToUrl = "http://ec2-46-137-56-2.eu-west-1.compute.amazonaws.com/openid/verify";
+      String returnToUrl = "http://localhost:9090/openid/verify";
 
       // Perform discovery on the user-supplied identifier
       List discoveries = manager.discover(identifier);
@@ -95,8 +103,9 @@ public class PublicOpenIDResource extends BaseResource {
       // and retrieve one service endpoint for authentication
       DiscoveryInformation discovered = manager.associate(discoveries);
 
-      // Store the discovery information in the user's session
-      request.getSession(true).setAttribute(OPENID_DISCOVERY_KEY, discovered);
+      // Store the discovery information in the user's session (creating a new one if required)
+      HttpSession session = request.getSession();
+      session.setAttribute(OPENID_DISCOVERY_KEY, discovered);
 
       // Build the AuthRequest message to be sent to the OpenID provider
       AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
@@ -104,23 +113,17 @@ public class PublicOpenIDResource extends BaseResource {
       // Build the FetchRequest containing the information to be copied
       // from the OpenID provider
       FetchRequest fetch = FetchRequest.createFetchRequest();
+      // Attempt to decode each entry
       if (identifier.startsWith(GOOGLE_ENDPOINT)) {
-        fetch.addAttribute("email",
-          "http://axschema.org/contact/email", true);
-        fetch.addAttribute("firstName",
-          "http://axschema.org/namePerson/first", true);
-        fetch.addAttribute("lastName",
-          "http://axschema.org/namePerson/last", true);
+        fetch.addAttribute("email", "http://axschema.org/contact/email", true);
+        fetch.addAttribute("firstName", "http://axschema.org/namePerson/first", true);
+        fetch.addAttribute("lastName", "http://axschema.org/namePerson/last", true);
       } else if (identifier.startsWith(YAHOO_ENDPOINT)) {
-        fetch.addAttribute("email",
-          "http://axschema.org/contact/email", true);
-        fetch.addAttribute("fullname",
-          "http://axschema.org/namePerson", true);
+        fetch.addAttribute("email", "http://axschema.org/contact/email", true);
+        fetch.addAttribute("fullname", "http://axschema.org/namePerson", true);
       } else { // works for myOpenID
-        fetch.addAttribute("fullname",
-          "http://schema.openid.net/namePerson", true);
-        fetch.addAttribute("email",
-          "http://schema.openid.net/contact/email", true);
+        fetch.addAttribute("fullname", "http://schema.openid.net/namePerson", true);
+        fetch.addAttribute("email", "http://schema.openid.net/contact/email", true);
       }
 
       // Attach the extension to the authentication request
@@ -147,6 +150,10 @@ public class PublicOpenIDResource extends BaseResource {
   @GET
   @Path("/verify")
   public View verifyOpenIdServerResponse() {
+
+    if (true) {
+    throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
 
     BaseModel model = new BaseModel();
 
@@ -188,7 +195,6 @@ public class PublicOpenIDResource extends BaseResource {
         // Put the result into the user cache
         User user = new User();
         user.setOpenIDIdentifier(verified.get().getIdentifier());
-        user.setAuthorities(Sets.newHashSet(Authority.ROLE_PUBLIC));
 
         // Extract additional information
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
@@ -196,9 +202,26 @@ public class PublicOpenIDResource extends BaseResource {
           user.setFirstName(extractFirstName(authSuccess));
           user.setLastName(extractLastName(authSuccess));
         }
+        log.info("Extracted a {}",user);
+
+        // Bind the authorities to the user
+        Set<Authority> authorities = Sets.newHashSet();
+
+        // Promote to admin if they have a specific email address
+        // (not a good way, but this is only a demo)
+        if ("nobody@example.org".equals(user.getEmailAddress())) {
+          authorities.add(Authority.ROLE_ADMIN);
+          log.info("Granted admin rights");
+        }
+
+        authorities.add(Authority.ROLE_PUBLIC);
+        user.setAuthorities(authorities);
+
+        // This user may be returning through a verified cookie on a new session
+        HttpSession session = request.getSession();
 
         // Use a central store for Users (keeps the session light)
-        InMemoryUserCache.INSTANCE.put(request.getSession(false).getId(), user);
+        InMemoryUserCache.INSTANCE.put(session.getId(), user);
 
         return new PublicFreemarkerView<BaseModel>("common/home.ftl", model);
       }

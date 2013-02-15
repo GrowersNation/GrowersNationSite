@@ -39,6 +39,7 @@ public class SiteService extends Service<SiteConfiguration> {
     super("store");
     CacheBuilderSpec cacheBuilderSpec = (System.getenv("FILE_CACHE_ENABLED") == null) ? CacheBuilderSpec.parse("maximumSize=0") : AssetsBundle.DEFAULT_CACHE_SPEC;
     addBundle(new AssetsBundle("/assets/images", cacheBuilderSpec, "/images"));
+    addBundle(new AssetsBundle("/assets/jquery", cacheBuilderSpec, "/jquery"));
 
   }
 

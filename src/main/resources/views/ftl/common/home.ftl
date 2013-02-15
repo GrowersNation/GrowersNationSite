@@ -13,10 +13,10 @@
     <div id="content" class="clearfix">
         <div class="post">
             <div class="post_header_bg"><h1 class="post-title"><a href="http://www.growers-nation.org/"
-                                                                  title="Login with OpenID">Login with OpenID</a></h1>
+                                                                  title="Growers' Nation Site">Growers' Nation Site</a></h1>
             </div>
             <div class="entry">
-                <a href="/private/home">Access ghi private info (protected with OpenId) available to public</a>
+                <a href="/private/home">Access private info (protected with OpenId) available to public</a>
 
                 <a href="/private/admin">Access private info (protected with OpenId) available to Administrators</a>
 
@@ -28,7 +28,6 @@
 
     </div>
     <!-- content end -->
-</div>
 
 <#include "../includes/common/footer.ftl">
 
