@@ -25,6 +25,10 @@ logging:
     "org.growersnation": DEBUG
 
   # ...
+
+
+  LONDON20
+
   # Settings for logging to stdout.
   console:
 
@@ -38,18 +42,18 @@ logging:
   file:
 
     # If true, write log statements to a file.
-    enabled: false
+    enabled: true
 
     # Do not write log statements below this threshold to the file.
     threshold: ALL
 
     # The file to which current statements will be logged.
-    currentLogFilename: /var/log/site/site-developer.log
+    currentLogFilename: /var/log/site/developer.log
 
     # When the log file rotates, the archived log will be renamed to this and gzipped. The
     # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
     # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
-    archivedLogFilenamePattern: /var/log/site/site-developer-%d.log.gz
+    archivedLogFilenamePattern: /var/log/site/developer-%d.log.gz
 
     # The number of archived files to keep.
     archivedFileCount: 5
