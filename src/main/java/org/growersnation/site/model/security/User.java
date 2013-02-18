@@ -1,4 +1,4 @@
-package org.growersnation.site.model;
+package org.growersnation.site.model.security;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;

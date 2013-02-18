@@ -1,7 +1,7 @@
 package org.growersnation.site.auth.openid;
 
 import com.google.common.base.Objects;
-import org.growersnation.site.model.Authority;
+import org.growersnation.site.model.security.Authority;
 
 import java.util.Set;
 

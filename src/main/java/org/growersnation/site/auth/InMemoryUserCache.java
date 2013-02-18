@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.growersnation.site.model.User;
+import org.growersnation.site.model.security.User;
 
 import java.util.concurrent.TimeUnit;
 

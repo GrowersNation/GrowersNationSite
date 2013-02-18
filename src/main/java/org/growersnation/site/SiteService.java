@@ -10,7 +10,7 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.growersnation.site.auth.openid.OpenIDAuthenticator;
 import org.growersnation.site.auth.openid.OpenIDRestrictedToProvider;
 import org.growersnation.site.health.SiteHealthCheck;
-import org.growersnation.site.model.User;
+import org.growersnation.site.model.security.User;
 import org.growersnation.site.resources.PublicHomeResource;
 
 /**

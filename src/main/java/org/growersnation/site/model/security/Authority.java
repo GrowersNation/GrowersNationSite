@@ -1,4 +1,4 @@
-package org.growersnation.site.model;
+package org.growersnation.site.model.security;
 
 /**
  * <p>Enumeration to provide the following to application:</p>

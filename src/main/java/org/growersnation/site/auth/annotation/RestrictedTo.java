@@ -1,13 +1,13 @@
 package org.growersnation.site.auth.annotation;
 
-import org.growersnation.site.model.Authority;
+import org.growersnation.site.model.security.Authority;
 
 import java.lang.annotation.*;
 
 /**
  * <p>Annotation to provide the following to application:</p>
  * <ul>
- * <li>Concise type-safe reference to {@link org.growersnation.site.model.Authority}</li>
+ * <li>Concise type-safe reference to {@link org.growersnation.site.model.security.Authority}</li>
  * <li>Binds to parameter to assist injection of User</li>
  * </ul>
  * <p>Example:</p>

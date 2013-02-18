@@ -3,9 +3,9 @@ package org.growersnation.site.resources;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
 import org.growersnation.site.auth.annotation.RestrictedTo;
-import org.growersnation.site.model.Authority;
+import org.growersnation.site.model.security.Authority;
 import org.growersnation.site.model.BaseModel;
-import org.growersnation.site.model.User;
+import org.growersnation.site.model.security.User;
 import org.growersnation.site.views.PublicFreemarkerView;
 
 import javax.ws.rs.GET;

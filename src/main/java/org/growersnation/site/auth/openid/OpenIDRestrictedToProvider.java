@@ -13,7 +13,7 @@ import org.growersnation.site.auth.annotation.RestrictedTo;
  * <p>Authentication provider to provide the following to Jersey:</p>
  * <ul>
  * <li>Bridge between Dropwizard and Jersey for HMAC authentication</li>
- * <li>Provides additional {@link org.growersnation.site.model.Authority} information</li>
+ * <li>Provides additional {@link org.growersnation.site.model.security.Authority} information</li>
  * </ul>
  *
  * @param <T>    the principal type.
