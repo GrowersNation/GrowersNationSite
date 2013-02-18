@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import javax.xml.bind.JAXB;
 import java.io.InputStream;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,6 +21,17 @@ public class SoilPortalDaoTest {
     Fields fields = fir.getFields().get(0);
 
     assertEquals("Polygon",fields.getShape());
+
+  }
+
+  @Test
+  public void testLiveData() {
+
+    SoilPortalDao testObject = new SoilPortalDao();
+
+    List<Fields> fields = testObject.getSoilData(51.2, 0.1);
+
+    assertEquals("Polygon",fields.get(0).getShape());
 
   }
 

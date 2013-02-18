@@ -1,10 +1,22 @@
 package org.growersnation.site.dao.bgs;
 
-import com.sun.jersey.api.client.Client;
+import com.google.common.base.Charsets;
 import org.growersnation.site.model.bgs.FeatureInfoResponse;
+import org.growersnation.site.model.bgs.Fields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXB;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>DAO to provide the following to application:</p>
@@ -17,26 +29,102 @@ import java.net.URI;
  */
 public class SoilPortalDao {
 
-  private final Client client;
+  private static final Logger log = LoggerFactory.getLogger(SoilPortalDao.class);
 
-  public SoilPortalDao(Client client) {
-    this.client = client;
+  /**
+   * Default request header fields
+   */
+  private Map<String, String> defaultHttpHeaders = new HashMap<String, String>();
+
+  public SoilPortalDao() {
+    // Always use UTF8
+    defaultHttpHeaders.put("Accept-Charset", Charsets.UTF_8.name());
+    // Accept text/xml by default
+    defaultHttpHeaders.put("Accept", "text/xml");
   }
 
-  public void getSoilData(double lat, double lon) {
+  public List<Fields> getSoilData(double lat, double lon) {
 
     // TODO Calculate the BBOX based on lat/lon
 
     String bbox = "0.08,51.48,0.12,51.52";
 
-    URI uri = UriBuilder
-      .fromUri("http://maps.bgs.ac.uk/ArcGIS/services/SoilPortal/SoilPortal/MapServer/WMSServer")
-      .queryParam("REQUEST=Getfeatureinfo&VERSION=1.1.1&LAYERS={layers}&STYLES=default&FORMAT=text/xml&SRS=CRS:84&BBOX={bbox}&WIDTH=500&HEIGHT=500&X=250&Y=250&QUERY_LAYERS={queryLayers}", "6", bbox, 6)
-      .build();
+    StringBuilder sb = new StringBuilder();
+    sb.append("http://maps.bgs.ac.uk/ArcGIS/services/SoilPortal/SoilPortal/MapServer/WMSServer")
+      .append("?REQUEST=Getfeatureinfo")
+      .append("&VERSION=1.1.1")
+      .append("&LAYERS=")
+      .append("6")
+      .append("&STYLES=default")
+      .append("&FORMAT=text/xml")
+      .append("&SRS=CRS:84")
+      .append("&BBOX=")
+      .append(bbox)
+      .append("&WIDTH=500")
+      .append("&HEIGHT=500")
+      .append("&X=250")
+      .append("&Y=250")
+      .append("&QUERY_LAYERS=")
+      .append("6");
 
-    FeatureInfoResponse featureInfo = client.resource(uri).get(FeatureInfoResponse.class);
-
+    return queryBGSPortal(sb.toString());
 
   }
+
+  /**
+   * Handles the process of querying the BGS soil portal
+   *
+   * @param url The URL
+   *
+   * @return The list of fields
+   */
+  private List<Fields> queryBGSPortal(String url) {
+    HttpURLConnection connection = null;
+    try {
+      connection = getHttpURLConnection(url);
+      connection.setRequestMethod("GET");
+
+      // Copy default HTTP headers
+      Map<String, String> headerKeyValues = new HashMap<String, String>(defaultHttpHeaders);
+
+      // Add HTTP headers to the request
+      for (Map.Entry<String, String> entry : headerKeyValues.entrySet()) {
+        connection.setRequestProperty(entry.getKey(), entry.getValue());
+        log.debug("Header request property: key='{}', value='{}'", entry.getKey(), entry.getValue());
+      }
+
+      // Get the input stream
+      InputStream inputStream = connection.getInputStream();
+
+      int httpStatus = connection.getResponseCode();
+      log.debug("Request http status = {}", httpStatus);
+
+      // Get the data
+      FeatureInfoResponse fir = JAXB.unmarshal(inputStream, FeatureInfoResponse.class);
+
+      return fir.getFields();
+    } catch (MalformedURLException e) {
+      throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+    } catch (IOException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+  /**
+   * @param urlString The URL string
+   *
+   * @return a HttpURLConnection instance
+   *
+   * @throws IOException
+   */
+  /* package */ HttpURLConnection getHttpURLConnection(String urlString) throws IOException {
+
+    return (HttpURLConnection) new URL(urlString).openConnection();
+  }
+
 
 }
