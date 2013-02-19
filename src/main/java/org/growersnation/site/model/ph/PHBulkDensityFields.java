@@ -1,5 +1,7 @@
 package org.growersnation.site.model.ph;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,45 +18,59 @@ import javax.xml.bind.annotation.XmlAttribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PHBulkDensityFields {
 
+  @JsonProperty
   @XmlAttribute(name = "DOMINANT_BROAD_HABITAT")
   private String dominantBroadHabitat;
 
+  @JsonProperty
   @XmlAttribute(name = "pH_1978")
   private String ph1978;
 
+  @JsonProperty
   @XmlAttribute(name = "pH_1998")
   private String ph1998;
 
+  @JsonProperty
   @XmlAttribute(name = "pH_2007")
   private String ph2007;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.CN_RATIO_1998")
   private String cnRatio1998;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.CN_RATIO_2007")
   private String cnRatio2007;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.CN_RATIO_1998_2007")
   private String cnRatio1998_2007;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.N_CONC_1998_2007")
   private String nConc1998_2007;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.MITE_SPRINGTAIL_RATIO_1998")
   private String miteSpringtailRatio1998;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.MITE_SPRINGTAIL_RATIO_2007")
   private String miteSpringtailRatio2007;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.MITE_SPRINGTAIL_RATIO_9807")
   private String miteSpringtailRatio9807;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.NUM_BROADTAXA_1998")
   private String numBroadtaxa1998;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.NUM_BROADTAXA_2007")
   private String numBroadtaxa2007;
 
+  @JsonProperty
   @XmlAttribute(name = "CORPADMIN.Soils2000Data.NUM_BROADTAXA_1998_2007")
   private String numBroadtaxa1998_2007;
 

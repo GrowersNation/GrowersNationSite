@@ -1,5 +1,7 @@
 package org.growersnation.site.model.texture;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,42 +18,55 @@ import javax.xml.bind.annotation.XmlAttribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SoilTextureFields {
 
+  @JsonProperty
   @XmlAttribute(name = "OBJECTID")
   private String objectId;
 
+  @JsonProperty
   @XmlAttribute(name = "Shape")
   private String shape;
 
+  @JsonProperty
   @XmlAttribute(name = "GEN_PMLITH")
   private String genPMLith;
 
+  @JsonProperty
   @XmlAttribute(name = "ESB_DESC")
   private String esbDescription;
 
+  @JsonProperty
   @XmlAttribute(name = "GRAINSIZE")
   private String grainSize;
 
+  @JsonProperty
   @XmlAttribute(name = "SOIL_GROUP")
   private String soilGroup;
 
+  @JsonProperty
   @XmlAttribute(name = "SOIL_DEPTH")
   private String soilDepth;
 
+  @JsonProperty
   @XmlAttribute(name = "CAC03_RANK")
   private String cac03Rank;
 
+  @JsonProperty
   @XmlAttribute(name = "PMM_UID")
   private String pmmUID;
 
+  @JsonProperty
   @XmlAttribute(name = "ESB_CODE")
   private String esbCode;
 
+  @JsonProperty
   @XmlAttribute(name = "LEX_RCS")
   private String lexRCS;
 
+  @JsonProperty
   @XmlAttribute(name = "Shape_Length")
   private String shapeLength;
 
+  @JsonProperty
   @XmlAttribute(name = "Shape_Area")
   private String shapeArea;
 

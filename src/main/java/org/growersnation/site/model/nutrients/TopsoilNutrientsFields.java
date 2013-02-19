@@ -1,5 +1,7 @@
 package org.growersnation.site.model.nutrients;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,9 +18,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TopsoilNutrientsFields {
 
+  @JsonProperty
   @XmlAttribute(name = "DOMINANT_BROAD_HABITAT")
   private String dominantBroadHabitat;
 
+  @JsonProperty
   @XmlAttribute(name = "Minerisable_N_2007")
   private String minerisableN2007;
 

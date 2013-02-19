@@ -16,10 +16,16 @@
                                                                   title="Growers' Nation Site">Growers' Nation Site</a></h1>
             </div>
             <div class="entry">
-                <a href="/private/home">Access private info (protected with OpenId) available to public</a>
+                <h3>OpenID demo</h3>
+                <ul>
+                    <li><a href="/private/home">Access private info (protected with OpenId) available to public</a></li>
+                    <li><a href="/private/admin">Access private info (protected with OpenId) available to Administrators</a></li>
+                </ul>
 
-                <a href="/private/admin">Access private info (protected with OpenId) available to Administrators</a>
-
+                <h3>Soil data demo</h3>
+                <ul>
+                    <li><a href="/soildata?location=51.65,0.1">Look up soil data for lat/lon 51.65,0.1</a></li>
+                </ul>
             </div>
             <div class="endline"></div>
         </div>
