@@ -1,4 +1,4 @@
-package org.growersnation.site.model.bgs;
+package org.growersnation.site.model.texture;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,14 +7,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 /**
  * <p>DTO to provide the following to {@link FeatureInfoResponse}:</p>
  * <ul>
- * <li>Storage of state of soil portal data</li>
+ * <li>Storage of state of soil texture data</li>
  * </ul>
  *
  * @since 0.0.1
  *         
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Fields {
+public class SoilTextureFields {
 
   @XmlAttribute(name = "OBJECTID")
   private String objectId;

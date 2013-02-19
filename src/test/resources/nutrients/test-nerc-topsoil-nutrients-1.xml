@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<FeatureInfoResponse xmlns:esri_wms="http://www.esri.com/wms" xmlns="http://www.esri.com/wms">
+  <FIELDS DOMINANT_BROAD_HABITAT="Improved grassland" Minerisable_N_2007="10.10629752"></FIELDS>
+</FeatureInfoResponse>

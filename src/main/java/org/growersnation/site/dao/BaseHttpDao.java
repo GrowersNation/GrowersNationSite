@@ -1,8 +1,7 @@
-package org.growersnation.site.dao.bgs;
+package org.growersnation.site.dao;
 
 import com.google.common.base.Charsets;
-import org.growersnation.site.model.bgs.FeatureInfoResponse;
-import org.growersnation.site.model.bgs.Fields;
+import org.growersnation.site.model.FieldAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,56 +18,28 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>DAO to provide the following to application:</p>
+ * <p>Abstract base class to provide the following to HTTP DAOs:</p>
  * <ul>
- * <li>Access to BGS soil portal</li>
+ * <li>Provision of common methods</li>
  * </ul>
  *
  * @since 0.0.1
  *         
  */
-public class SoilPortalDao {
+public abstract class BaseHttpDao {
 
-  private static final Logger log = LoggerFactory.getLogger(SoilPortalDao.class);
+  private static final Logger log = LoggerFactory.getLogger(BaseHttpDao.class);
 
   /**
    * Default request header fields
    */
-  private Map<String, String> defaultHttpHeaders = new HashMap<String, String>();
+  protected Map<String, String> defaultHttpHeaders = new HashMap<String, String>();
 
-  public SoilPortalDao() {
+  protected BaseHttpDao() {
     // Always use UTF8
     defaultHttpHeaders.put("Accept-Charset", Charsets.UTF_8.name());
     // Accept text/xml by default
     defaultHttpHeaders.put("Accept", "text/xml");
-  }
-
-  public List<Fields> getSoilData(double lat, double lon) {
-
-    // TODO Calculate the BBOX based on lat/lon
-
-    String bbox = "0.08,51.48,0.12,51.52";
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("http://maps.bgs.ac.uk/ArcGIS/services/SoilPortal/SoilPortal/MapServer/WMSServer")
-      .append("?REQUEST=Getfeatureinfo")
-      .append("&VERSION=1.1.1")
-      .append("&LAYERS=")
-      .append("6")
-      .append("&STYLES=default")
-      .append("&FORMAT=text/xml")
-      .append("&SRS=CRS:84")
-      .append("&BBOX=")
-      .append(bbox)
-      .append("&WIDTH=500")
-      .append("&HEIGHT=500")
-      .append("&X=250")
-      .append("&Y=250")
-      .append("&QUERY_LAYERS=")
-      .append("6");
-
-    return queryBGSPortal(sb.toString());
-
   }
 
   /**
@@ -78,7 +49,7 @@ public class SoilPortalDao {
    *
    * @return The list of fields
    */
-  private List<Fields> queryBGSPortal(String url) {
+  protected <F> List<F> queryHttpSource(String url, Class<? extends FieldAccessor<F>> featureInfoResponse, Class<F> fieldType ) {
     HttpURLConnection connection = null;
     try {
       connection = getHttpURLConnection(url);
@@ -100,7 +71,7 @@ public class SoilPortalDao {
       log.debug("Request http status = {}", httpStatus);
 
       // Get the data
-      FeatureInfoResponse fir = JAXB.unmarshal(inputStream, FeatureInfoResponse.class);
+      FieldAccessor<F> fir = JAXB.unmarshal(inputStream, featureInfoResponse);
 
       return fir.getFields();
     } catch (MalformedURLException e) {
@@ -115,16 +86,16 @@ public class SoilPortalDao {
   }
 
   /**
+   * Tests should mock this method to keep the build local
+   *
    * @param urlString The URL string
    *
    * @return a HttpURLConnection instance
    *
-   * @throws IOException
+   * @throws java.io.IOException
    */
   /* package */ HttpURLConnection getHttpURLConnection(String urlString) throws IOException {
 
     return (HttpURLConnection) new URL(urlString).openConnection();
   }
-
-
 }
