@@ -18,8 +18,8 @@
             <div class="entry">
                 <h3>OpenID demo</h3>
                 <ul>
-                    <li><a href="/private/home">Access private info (protected with OpenId) available to public</a></li>
-                    <li><a href="/private/admin">Access private info (protected with OpenId) available to Administrators</a></li>
+                    <li><a href="/private/home">Access private info (protected with OpenID) available to public</a></li>
+                    <li><a href="/private/admin">Access private info (protected with OpenID) available to Administrators</a></li>
                 </ul>
 
                 <h3>Soil data demo</h3>
