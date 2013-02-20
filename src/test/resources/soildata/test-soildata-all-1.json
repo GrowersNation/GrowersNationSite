@@ -1,0 +1,57 @@
+{"carbonFields": [
+  {
+    "dominantBroadHabitat": "Arable",
+    "dominantBroadHabitat2000": "Arable",
+    "concentration1978": "34.5",
+    "concentration1998": "33.5",
+    "concentration2007": "30.7",
+    "cnRatio1998": "11.7",
+    "cnRatio2007": "11.3",
+    "cnRatio1998_2007": "-0.4",
+    "nConcentration1998_2007": "-0.02",
+    "miteSpringtailRatio1998": "1.83",
+    "miteSpringtailRatio2007": "5.31",
+    "miteSpringtailRatio9807": "3.48",
+    "numBroadtaxa1998": "4.13",
+    "numBroadtaxa2007": "3.4",
+    "numBroadtaxa9807": "-0.73"
+  }
+], "topsoilNutrientsFields": [
+  {
+    "dominantBroadHabitat": "Arable",
+    "minerisableN2007": "8.6551764"
+  }
+], "phBulkDensityFields": [
+  {
+    "dominantBroadHabitat": "Arable",
+    "ph1978": "6.59",
+    "ph1998": "6.81",
+    "ph2007": "7.2",
+    "cnRatio1998": "11.7",
+    "cnRatio2007": "11.3",
+    "cnRatio1998_2007": "-0.4",
+    "nConc1998_2007": "-0.02",
+    "miteSpringtailRatio1998": "1.83",
+    "miteSpringtailRatio2007": "5.31",
+    "miteSpringtailRatio9807": "3.48",
+    "numBroadtaxa1998": "4.13",
+    "numBroadtaxa2007": "3.4",
+    "numBroadtaxa1998_2007": "-0.73"
+  }
+], "soilTextureFields": [
+  {
+    "objectId": "221077",
+    "shape": "Polygon",
+    "genPMLith": "CLAY-SILT-SAND-GRAVEL",
+    "esbDescription": "RIVERINE CLAY AND FLOODPLAIN SANDS AND GRAVEL",
+    "grainSize": null,
+    "soilGroup": "ALL",
+    "soilDepth": "DEEP",
+    "cac03Rank": null,
+    "pmmUID": "bgsn:PMMv6_pk_221076",
+    "esbCode": "541_532",
+    "lexRCS": "ALV-XCZSV",
+    "shapeLength": "3999.9756",
+    "shapeArea": "999987.800038"
+  }
+]}
