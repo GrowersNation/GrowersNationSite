@@ -2,6 +2,7 @@ package org.growersnation.site.dao;
 
 import org.growersnation.site.model.texture.FeatureInfoResponse;
 import org.growersnation.site.model.texture.SoilTextureFields;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.bind.JAXB;
@@ -26,7 +27,10 @@ public class SoilTextureDaoTest {
 
   }
 
-  @Test
+  /**
+   * Only required during development
+   */
+  @Ignore
   public void testLiveData() {
 
     SoilTextureDao testObject = new SoilTextureDao();

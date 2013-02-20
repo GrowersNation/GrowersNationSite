@@ -2,6 +2,7 @@ package org.growersnation.site.dao;
 
 import org.growersnation.site.model.carbon.CarbonFields;
 import org.growersnation.site.model.carbon.FeatureInfoResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.bind.JAXB;
@@ -24,7 +25,10 @@ public class TopsoilCarbonDaoTest {
 
   }
 
-  @Test
+  /**
+   * Only required during development
+   */
+  @Ignore
   public void testLiveData() {
 
     TopsoilCarbonDao testObject = new TopsoilCarbonDao();

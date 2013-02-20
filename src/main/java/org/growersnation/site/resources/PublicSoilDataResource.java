@@ -9,6 +9,9 @@ import org.growersnation.site.dao.TopsoilCarbonDao;
 import org.growersnation.site.dao.TopsoilNutrientsDao;
 import org.growersnation.site.model.SoilData;
 import org.growersnation.site.model.carbon.CarbonFields;
+import org.growersnation.site.model.nutrients.TopsoilNutrientsFields;
+import org.growersnation.site.model.ph.PHBulkDensityFields;
+import org.growersnation.site.model.texture.SoilTextureFields;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -63,10 +66,16 @@ public class PublicSoilDataResource extends BaseResource {
 
     }
 
-    List<CarbonFields> carbonFieldsList = topsoilCarbonDao.getTopsoilCarbonData(Double.valueOf(lat), Double.valueOf(lon));
+    List<CarbonFields> carbonFieldsList = topsoilCarbonDao.getTopsoilCarbonData(lat, lon);
+    List<PHBulkDensityFields> phBulkDensityFieldsList = phBulkDensityDao.getPHBulkDensityData(lat, lon);
+    List<SoilTextureFields> soilTextureFieldsList = soilTextureDao.getSoilTextureData(lat, lon);
+    List<TopsoilNutrientsFields> topsoilNutrientsFieldsList = topsoilNutrientsDao.getTopsoilNutrientsData(lat, lon);
 
     SoilData soilData = new SoilData();
     soilData.setCarbonFields(carbonFieldsList);
+    soilData.setPhBulkDensityFields(phBulkDensityFieldsList);
+    soilData.setSoilTextureFields(soilTextureFieldsList);
+    soilData.setTopsoilNutrientsFields(topsoilNutrientsFieldsList);
 
     return soilData;
 

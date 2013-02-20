@@ -2,6 +2,7 @@ package org.growersnation.site.dao;
 
 import org.growersnation.site.model.ph.FeatureInfoResponse;
 import org.growersnation.site.model.ph.PHBulkDensityFields;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBContext;
@@ -31,7 +32,10 @@ public class PHBulkDensityDaoTest {
 
   }
 
-  @Test
+  /**
+   * Only required during development
+   */
+  @Ignore
   public void testLiveData() {
 
     PHBulkDensityDao testObject = new PHBulkDensityDao();

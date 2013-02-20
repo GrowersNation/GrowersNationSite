@@ -3,6 +3,7 @@ package org.growersnation.site.dao;
 import org.growersnation.site.model.nutrients.TopsoilNutrientsFields;
 import org.growersnation.site.model.ph.FeatureInfoResponse;
 import org.growersnation.site.model.ph.PHBulkDensityFields;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.bind.JAXB;
@@ -25,7 +26,10 @@ public class TopsoilNutrientsDaoTest {
 
   }
 
-  @Test
+  /**
+   * Only required during development
+   */
+  @Ignore
   public void testLiveData() {
 
     TopsoilNutrientsDao testObject = new TopsoilNutrientsDao();
