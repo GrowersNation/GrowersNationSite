@@ -16,7 +16,7 @@ public class SoilTextureDaoTest {
   @Test
   public void testJAXB() {
 
-    InputStream is = SoilTextureDaoTest.class.getResourceAsStream("/texture/test-bgs-texture-clay-1.xml");
+    InputStream is = SoilTextureDaoTest.class.getResourceAsStream("/soil/texture/test-bgs-texture-clay-1.xml");
     FeatureInfoResponse fir = JAXB.unmarshal(is, FeatureInfoResponse.class);
 
     assertEquals(2,fir.getFields().size());

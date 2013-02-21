@@ -7,11 +7,9 @@ import org.growersnation.site.dao.soil.PHBulkDensityDao;
 import org.growersnation.site.dao.soil.SoilTextureDao;
 import org.growersnation.site.dao.soil.TopsoilCarbonDao;
 import org.growersnation.site.dao.soil.TopsoilNutrientsDao;
-import org.growersnation.site.model.soil.SoilData;
-import org.growersnation.site.model.soil.carbon.CarbonFields;
-import org.growersnation.site.model.soil.nutrients.TopsoilNutrientsFields;
-import org.growersnation.site.model.soil.ph.PHBulkDensityFields;
-import org.growersnation.site.model.soil.texture.SoilTextureFields;
+import org.growersnation.site.dao.weather.TemperatureLocationDao;
+import org.growersnation.site.model.weather.WeatherData;
+import org.growersnation.site.model.weather.temperature.TemperatureLocation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -36,9 +34,10 @@ public class PublicWeatherDataResource extends BaseResource {
   SoilTextureDao soilTextureDao = new SoilTextureDao();
   TopsoilCarbonDao topsoilCarbonDao = new TopsoilCarbonDao();
   TopsoilNutrientsDao topsoilNutrientsDao = new TopsoilNutrientsDao();
+  TemperatureLocationDao temperatureLocationDao = new TemperatureLocationDao();
 
   /**
-   * Provide soil data based on a Lat/Lng combination
+   * Provide weather data based on a Lat/Lng combination
    * @param rawLocation The location expressed as lat,long
    * @param rawRadius The radius in 0.02
    *
@@ -48,7 +47,7 @@ public class PublicWeatherDataResource extends BaseResource {
   @Timed
   @CacheControl(maxAge = 6, maxAgeUnit = TimeUnit.HOURS)
   @Produces(MediaType.APPLICATION_JSON)
-  public SoilData getSoilData(
+  public WeatherData getWeatherData(
     @QueryParam("location") String rawLocation,
     @QueryParam("radius") String rawRadius
     ) {
@@ -70,19 +69,13 @@ public class PublicWeatherDataResource extends BaseResource {
     }
 
     // Assume that the DAOs are perfectly accurate for their APIs
-    List<CarbonFields> carbonFieldsList = topsoilCarbonDao.getTopsoilCarbonData(lat, lng);
-    List<PHBulkDensityFields> phBulkDensityFieldsList = phBulkDensityDao.getPHBulkDensityData(lat, lng);
-    List<SoilTextureFields> soilTextureFieldsList = soilTextureDao.getSoilTextureData(lat, lng);
-    List<TopsoilNutrientsFields> topsoilNutrientsFieldsList = topsoilNutrientsDao.getTopsoilNutrientsData(lat, lng);
+    List<TemperatureLocation> temperatureLocations = temperatureLocationDao.getTemperatureLocationData(lat, lng);
 
-    // 
-    SoilData soilData = new SoilData();
-    soilData.setCarbonFields(carbonFieldsList);
-    soilData.setPhBulkDensityFields(phBulkDensityFieldsList);
-    soilData.setSoilTextureFields(soilTextureFieldsList);
-    soilData.setTopsoilNutrientsFields(topsoilNutrientsFieldsList);
+    // Build some weather data
+    WeatherData weatherData = new WeatherData();
+    weatherData.setTemperatureLocations(temperatureLocations);
 
-    return soilData;
+    return weatherData;
 
   }
 

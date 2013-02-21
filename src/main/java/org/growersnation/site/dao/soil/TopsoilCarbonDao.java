@@ -49,7 +49,7 @@ public class TopsoilCarbonDao extends BaseHttpDao {
       .append("&QUERY_LAYERS=")
       .append("0");
 
-    return queryHttpSource(sb.toString(), FeatureInfoResponse.class, CarbonFields.class);
+    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, CarbonFields.class);
 
   }
 

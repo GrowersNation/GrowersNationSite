@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locs>
+  <loc>
+    <lat>51.65</lat>
+    <lon>0.1</lon>
+    <unit>degC</unit>
+    <var name="temp">
+      <jan>2.2</jan>
+      <feb>3.3</feb>
+      <mar>4.2</mar>
+      <apr>5.9</apr>
+      <may>8.0</may>
+      <jun>12.8</jun>
+      <jul>16.6</jul>
+      <aug>20.2</aug>
+      <sep>18.1</sep>
+      <oct>10.3</oct>
+      <nov>8.3</nov>
+      <dec>2.1</dec>
+    </var>
+  </loc>
+</locs>

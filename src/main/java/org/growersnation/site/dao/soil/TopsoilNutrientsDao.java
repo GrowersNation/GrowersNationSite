@@ -49,7 +49,7 @@ public class TopsoilNutrientsDao extends BaseHttpDao {
       .append("&QUERY_LAYERS=")
       .append("1");
 
-    return queryHttpSource(sb.toString(), FeatureInfoResponse.class, TopsoilNutrientsFields.class);
+    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, TopsoilNutrientsFields.class);
 
   }
 

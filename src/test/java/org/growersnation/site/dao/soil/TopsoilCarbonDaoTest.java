@@ -16,7 +16,7 @@ public class TopsoilCarbonDaoTest {
   @Test
   public void testJAXB() {
 
-    InputStream is = TopsoilCarbonDaoTest.class.getResourceAsStream("/carbon/test-nerc-topsoil-carbon-1.xml");
+    InputStream is = TopsoilCarbonDaoTest.class.getResourceAsStream("/soil/carbon/test-nerc-topsoil-carbon-1.xml");
     FeatureInfoResponse fir = JAXB.unmarshal(is, FeatureInfoResponse.class);
 
     CarbonFields fields = fir.getFields().get(0);

@@ -45,13 +45,13 @@ public abstract class BaseHttpDao {
   }
 
   /**
-   * Handles the process of querying the BGS soil portal
+   * Handles the process of querying a WMS server offering FeatureInfo/FIELD combinations
    *
    * @param url The URL
    *
    * @return The list of fields
    */
-  protected <F> List<F> queryHttpSource(String url, Class<? extends FieldAccessor<F>> featureInfoResponse, Class<F> fieldType ) {
+  protected <F> List<F> queryFeatureInfoFieldHttpSource(String url, Class<? extends FieldAccessor<F>> featureInfoResponse, Class<F> fieldType) {
     HttpURLConnection connection = null;
     try {
       connection = getHttpURLConnection(url);
@@ -76,6 +76,48 @@ public abstract class BaseHttpDao {
       FieldAccessor<F> fir = JAXB.unmarshal(inputStream, featureInfoResponse);
 
       return fir.getFields();
+    } catch (MalformedURLException e) {
+      throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+    } catch (IOException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+  /**
+   * Handles the process of querying an eXist DB server offering arbitrary XML responses
+   *
+   * @param url The URL
+   *
+   * @return The root element
+   */
+  protected <T> T queryExistDB(String url, Class<T> returnType) {
+    HttpURLConnection connection = null;
+    try {
+      connection = getHttpURLConnection(url);
+      connection.setRequestMethod("GET");
+
+      // Copy default HTTP headers
+      Map<String, String> headerKeyValues = new HashMap<String, String>(defaultHttpHeaders);
+
+      // Add HTTP headers to the request
+      for (Map.Entry<String, String> entry : headerKeyValues.entrySet()) {
+        connection.setRequestProperty(entry.getKey(), entry.getValue());
+        log.debug("Header request property: key='{}', value='{}'", entry.getKey(), entry.getValue());
+      }
+
+      // Get the input stream
+      InputStream inputStream = connection.getInputStream();
+
+      int httpStatus = connection.getResponseCode();
+      log.debug("Request http status = {}", httpStatus);
+
+      // Get the data
+      return JAXB.unmarshal(inputStream, returnType);
+
     } catch (MalformedURLException e) {
       throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
     } catch (IOException e) {

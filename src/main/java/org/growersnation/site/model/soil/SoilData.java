@@ -10,13 +10,10 @@ import org.growersnation.site.model.soil.texture.SoilTextureFields;
 import java.util.List;
 
 /**
- * <p>[Pattern] to provide the following to {@link Object}:</p>
+ * <p>Value object to provide the following to {@link org.growersnation.site.resources.PublicSoilDataResource}:</p>
  * <ul>
- * <li></li>
+ * <li>Representation of soil data</li>
  * </ul>
- * <p>Example:</p>
- * <pre>
- * </pre>
  *
  * @since 0.0.1
  *         

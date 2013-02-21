@@ -49,7 +49,7 @@ public class PHBulkDensityDao extends BaseHttpDao {
       .append("&QUERY_LAYERS=")
       .append("0");
 
-    return queryHttpSource(sb.toString(), FeatureInfoResponse.class, PHBulkDensityFields.class);
+    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, PHBulkDensityFields.class);
 
   }
 

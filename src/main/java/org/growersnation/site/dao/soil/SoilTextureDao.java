@@ -49,7 +49,7 @@ public class SoilTextureDao extends BaseHttpDao {
       .append("&QUERY_LAYERS=")
       .append("6");
 
-    return queryHttpSource(sb.toString(), FeatureInfoResponse.class, SoilTextureFields.class);
+    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, SoilTextureFields.class);
 
   }
 

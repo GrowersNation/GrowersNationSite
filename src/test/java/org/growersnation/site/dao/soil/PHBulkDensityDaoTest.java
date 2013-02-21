@@ -17,7 +17,7 @@ public class PHBulkDensityDaoTest {
   @Test
   public void testJAXB() throws JAXBException {
 
-    InputStream is = PHBulkDensityDaoTest.class.getResourceAsStream("/ph/test-nerc-topsoil-ph-1.xml");
+    InputStream is = PHBulkDensityDaoTest.class.getResourceAsStream("/soil/ph/test-nerc-topsoil-ph-1.xml");
 
     // Build JAXB the long way to get better error messages
     JAXBContext context = JAXBContext.newInstance(FeatureInfoResponse.class);
