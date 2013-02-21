@@ -1,6 +1,6 @@
 package org.growersnation.site.resources;
 
-import org.growersnation.site.model.BaseModel;
+import org.growersnation.site.model.view.BaseModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;

@@ -1,11 +1,11 @@
-package org.growersnation.site.model;
+package org.growersnation.site.model.soil;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
-import org.growersnation.site.model.carbon.CarbonFields;
-import org.growersnation.site.model.nutrients.TopsoilNutrientsFields;
-import org.growersnation.site.model.ph.PHBulkDensityFields;
-import org.growersnation.site.model.texture.SoilTextureFields;
+import org.growersnation.site.model.soil.carbon.CarbonFields;
+import org.growersnation.site.model.soil.nutrients.TopsoilNutrientsFields;
+import org.growersnation.site.model.soil.ph.PHBulkDensityFields;
+import org.growersnation.site.model.soil.texture.SoilTextureFields;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package org.growersnation.site.model.ph;
+package org.growersnation.site.model.soil.ph;
 
 import com.google.common.collect.Lists;
-import org.growersnation.site.model.FieldAccessor;
+import org.growersnation.site.model.soil.FieldAccessor;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;

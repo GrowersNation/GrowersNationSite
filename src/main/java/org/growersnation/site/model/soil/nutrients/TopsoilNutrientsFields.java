@@ -1,4 +1,4 @@
-package org.growersnation.site.model.nutrients;
+package org.growersnation.site.model.soil.nutrients;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * <p>DTO to provide the following to {@link org.growersnation.site.model.nutrients.FeatureInfoResponse}:</p>
+ * <p>DTO to provide the following to {@link org.growersnation.site.model.soil.nutrients.FeatureInfoResponse}:</p>
  * <ul>
  * <li>Storage of state of topsoil nutrients fields</li>
  * </ul>

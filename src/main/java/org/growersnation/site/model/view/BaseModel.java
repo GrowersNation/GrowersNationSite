@@ -1,4 +1,4 @@
-package org.growersnation.site.model;
+package org.growersnation.site.model.view;
 
 /**
  * <p>Base class to provide the following to views:</p>

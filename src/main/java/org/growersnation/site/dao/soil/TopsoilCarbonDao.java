@@ -1,7 +1,8 @@
-package org.growersnation.site.dao;
+package org.growersnation.site.dao.soil;
 
-import org.growersnation.site.model.carbon.CarbonFields;
-import org.growersnation.site.model.carbon.FeatureInfoResponse;
+import org.growersnation.site.dao.BaseHttpDao;
+import org.growersnation.site.model.soil.carbon.CarbonFields;
+import org.growersnation.site.model.soil.carbon.FeatureInfoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,15 +21,15 @@ public class TopsoilCarbonDao extends BaseHttpDao {
 
   private static final Logger log = LoggerFactory.getLogger(TopsoilCarbonDao.class);
 
-  public List<CarbonFields> getTopsoilCarbonData(double lat, double lon) {
+  /**
+   * @param lat The precise latitude
+   * @param lng The precise longitude
+   *
+   * @return The available topsoil nutrient data near this area (subject to bounding box)
+   */
+  public List<CarbonFields> getTopsoilCarbonData(double lat, double lng) {
 
-    // Calculate the BBOX based on lat/lon
-    double minLong = lon - 0.02;
-    double maxLong = lon + 0.02;
-    double minLat = lat - 0.02;
-    double maxLat = lat + 0.02;
-    String bbox = String.format("%f,%f,%f,%f",minLong, minLat, maxLong, maxLat);
-
+    String bbox = getBBox(lat, lng);
 
     StringBuilder sb = new StringBuilder();
     sb.append("http://lasigpublic.nerc-lancaster.ac.uk/ArcGIS/services/Biodiversity/CS_topsoil_Carbon/MapServer/WMSServer")

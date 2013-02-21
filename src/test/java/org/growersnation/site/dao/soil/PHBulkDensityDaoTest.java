@@ -1,7 +1,7 @@
-package org.growersnation.site.dao;
+package org.growersnation.site.dao.soil;
 
-import org.growersnation.site.model.ph.FeatureInfoResponse;
-import org.growersnation.site.model.ph.PHBulkDensityFields;
+import org.growersnation.site.model.soil.ph.FeatureInfoResponse;
+import org.growersnation.site.model.soil.ph.PHBulkDensityFields;
 import org.junit.Ignore;
 import org.junit.Test;
 

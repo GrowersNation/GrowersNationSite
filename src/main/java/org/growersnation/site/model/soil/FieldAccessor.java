@@ -1,4 +1,4 @@
-package org.growersnation.site.model;
+package org.growersnation.site.model.soil;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package org.growersnation.site.dao;
 
 import com.google.common.base.Charsets;
-import org.growersnation.site.model.FieldAccessor;
+import org.growersnation.site.model.soil.FieldAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +29,8 @@ import java.util.Map;
 public abstract class BaseHttpDao {
 
   private static final Logger log = LoggerFactory.getLogger(BaseHttpDao.class);
+
+  private static final double MODEL_RESOLUTION = 0.02;
 
   /**
    * Default request header fields
@@ -97,5 +99,22 @@ public abstract class BaseHttpDao {
   /* package */ HttpURLConnection getHttpURLConnection(String urlString) throws IOException {
 
     return (HttpURLConnection) new URL(urlString).openConnection();
+  }
+
+  /**
+   *
+   * @param lat A precise latitude
+   * @param lng A precise longitude
+   * @return A bounding box (BBox) representing an imprecise region
+   */
+  protected String getBBox(double lat, double lng) {
+
+    // Calculate the BBOX based on lat/lon
+    double minLong = lng - MODEL_RESOLUTION;
+    double maxLong = lng + MODEL_RESOLUTION;
+    double minLat = lat - MODEL_RESOLUTION;
+    double maxLat = lat + MODEL_RESOLUTION;
+
+    return String.format("%f,%f,%f,%f",minLong, minLat, maxLong, maxLat);
   }
 }

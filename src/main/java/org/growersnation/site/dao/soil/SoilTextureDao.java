@@ -1,7 +1,8 @@
-package org.growersnation.site.dao;
+package org.growersnation.site.dao.soil;
 
-import org.growersnation.site.model.texture.FeatureInfoResponse;
-import org.growersnation.site.model.texture.SoilTextureFields;
+import org.growersnation.site.dao.BaseHttpDao;
+import org.growersnation.site.model.soil.texture.FeatureInfoResponse;
+import org.growersnation.site.model.soil.texture.SoilTextureFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,14 +21,15 @@ public class SoilTextureDao extends BaseHttpDao {
 
   private static final Logger log = LoggerFactory.getLogger(SoilTextureDao.class);
 
-  public List<SoilTextureFields> getSoilTextureData(double lat, double lon) {
+  /**
+   * @param lat The precise latitude
+   * @param lng The precise longitude
+   *
+   * @return The available topsoil texture data near this area (subject to bounding box)
+   */
+  public List<SoilTextureFields> getSoilTextureData(double lat, double lng) {
 
-    // Calculate the BBOX based on lat/lon
-    double minLong = lon - 0.02;
-    double maxLong = lon + 0.02;
-    double minLat = lat - 0.02;
-    double maxLat = lat + 0.02;
-    String bbox = String.format("%f,%f,%f,%f",minLong, minLat, maxLong, maxLat);
+    String bbox = getBBox(lat, lng);
 
     StringBuilder sb = new StringBuilder();
     sb.append("http://maps.bgs.ac.uk/ArcGIS/services/SoilPortal/SoilPortal/MapServer/WMSServer")

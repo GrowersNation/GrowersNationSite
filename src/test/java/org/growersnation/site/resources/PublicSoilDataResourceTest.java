@@ -1,6 +1,6 @@
 package org.growersnation.site.resources;
 
-import org.growersnation.site.model.SoilData;
+import org.growersnation.site.model.soil.SoilData;
 import org.growersnation.site.test.BaseResourceTest;
 import org.junit.Test;
 

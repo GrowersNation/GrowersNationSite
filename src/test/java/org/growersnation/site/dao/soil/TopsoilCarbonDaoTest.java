@@ -1,7 +1,7 @@
-package org.growersnation.site.dao;
+package org.growersnation.site.dao.soil;
 
-import org.growersnation.site.model.carbon.CarbonFields;
-import org.growersnation.site.model.carbon.FeatureInfoResponse;
+import org.growersnation.site.model.soil.carbon.CarbonFields;
+import org.growersnation.site.model.soil.carbon.FeatureInfoResponse;
 import org.junit.Ignore;
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
-package org.growersnation.site.dao;
+package org.growersnation.site.dao.soil;
 
-import org.growersnation.site.model.texture.FeatureInfoResponse;
-import org.growersnation.site.model.texture.SoilTextureFields;
+import org.growersnation.site.model.soil.texture.FeatureInfoResponse;
+import org.growersnation.site.model.soil.texture.SoilTextureFields;
 import org.junit.Ignore;
 import org.junit.Test;
 

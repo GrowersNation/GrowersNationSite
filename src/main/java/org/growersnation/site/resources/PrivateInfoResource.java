@@ -4,7 +4,7 @@ import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
 import org.growersnation.site.auth.annotation.RestrictedTo;
 import org.growersnation.site.model.security.Authority;
-import org.growersnation.site.model.BaseModel;
+import org.growersnation.site.model.view.BaseModel;
 import org.growersnation.site.model.security.User;
 import org.growersnation.site.views.PublicFreemarkerView;
 

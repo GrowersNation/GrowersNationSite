@@ -1,4 +1,4 @@
-package org.growersnation.site.model.texture;
+package org.growersnation.site.model.soil.texture;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import com.yammer.dropwizard.views.View;
 import org.growersnation.site.auth.InMemoryUserCache;
 import org.growersnation.site.model.security.Authority;
-import org.growersnation.site.model.BaseModel;
+import org.growersnation.site.model.view.BaseModel;
 import org.growersnation.site.model.security.User;
 import org.growersnation.site.views.PublicFreemarkerView;
 import org.openid4java.OpenIDException;

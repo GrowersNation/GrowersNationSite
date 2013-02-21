@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
  *
  * @since 0.0.1
  */
-@Path("/soildata")
+@Path("/weatherdata")
 @Produces(MediaType.TEXT_HTML)
-public class PublicSoilDataResource extends BaseResource {
+public class PublicWeatherDataResource extends BaseResource {
 
   PHBulkDensityDao phBulkDensityDao = new PHBulkDensityDao();
   SoilTextureDao soilTextureDao = new SoilTextureDao();
@@ -75,7 +75,7 @@ public class PublicSoilDataResource extends BaseResource {
     List<SoilTextureFields> soilTextureFieldsList = soilTextureDao.getSoilTextureData(lat, lng);
     List<TopsoilNutrientsFields> topsoilNutrientsFieldsList = topsoilNutrientsDao.getTopsoilNutrientsData(lat, lng);
 
-    //
+    // 
     SoilData soilData = new SoilData();
     soilData.setCarbonFields(carbonFieldsList);
     soilData.setPhBulkDensityFields(phBulkDensityFieldsList);
