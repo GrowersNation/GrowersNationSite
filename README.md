@@ -16,11 +16,6 @@ build can complete. Use the following commands from your eXistDB installation (u
     mvn install:install-file -Dfile=./exist.jar -DgroupId=org.exist -DartifactId=exist -Dversion=2.0.0 -Dpackaging=jar
     mvn install:install-file -Dfile=./exist-optional.jar -DgroupId=org.exist -DartifactId=exist -Dversion=2.0.0 -Dpackaging=jar
 
-Then switch into `/opt/exist/lib/core` and install the `xmldb.jar`
-
-    mvn install:install-file -Dfile=./xmldb.jar -DgroupId=org.xmldb -DartifactId=xmldb -Dversion=2.0.0 -Dpackaging=jar
-
-
 That should be a one-off operation for each build machine.
 
 ## Getting started
