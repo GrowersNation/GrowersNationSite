@@ -18,13 +18,13 @@
             <div class="entry">
                 <h3>OpenID demo</h3>
                 <ul>
-                    <li><a href="/private/home">Access private info (protected with OpenID) available to public</a></li>
+                    <li><a href="/private/home">Access your account info (protected with OpenID) available to public</a></li>
                     <li><a href="/private/admin">Access private info (protected with OpenID) available to Administrators</a></li>
                 </ul>
 
                 <h3>Soil data demo</h3>
                 <ul>
-                    <li><a href="/soildata?location=51.65,0.1">Look up soil data for lat/lon 51.65,0.1</a></li>
+                    <li><a href="/soildata?location=51.65,0.1">Look up soil data for lat/lng 51.65,0.1</a></li>
                 </ul>
             </div>
             <div class="endline"></div>

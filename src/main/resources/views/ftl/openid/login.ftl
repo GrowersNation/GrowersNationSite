@@ -59,7 +59,7 @@
 <script type="text/javascript" src="/jquery/plugins/openid-selector/js/openid-jquery.js"></script>
 <script type="text/javascript" src="/jquery/plugins/openid-selector/js/openid-en.js"></script>
 <script type="text/javascript">
-    $(document).ready(function () {
+    jQuery(document).ready(function () {
         openid.init('identifier');
     });
 </script>

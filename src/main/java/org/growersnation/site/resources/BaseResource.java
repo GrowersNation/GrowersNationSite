@@ -1,5 +1,7 @@
 package org.growersnation.site.resources;
 
+import org.growersnation.site.model.security.User;
+import org.growersnation.site.model.view.AuthenticatedModel;
 import org.growersnation.site.model.view.BaseModel;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,8 +72,18 @@ public abstract class BaseResource {
   protected BaseModel newBaseModel() {
 
     // Populate the model
-
     return new BaseModel();
+  }
+
+  /**
+   * Utility method to create a base model present on all authenticated resources
+   *
+   * @return A base model
+   */
+  protected AuthenticatedModel newAuthenticatedModel(User user) {
+
+    // Populate the model
+    return new AuthenticatedModel(user);
   }
 
 }
