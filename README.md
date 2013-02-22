@@ -8,6 +8,16 @@ This project provides the RESTful API to serve web clients with OpenID authentic
 
 All commands will work on *nix without modification, use \ instead of / for Windows.
 
+## Manual installation of eXistDB driver files
+
+The eXistDB support requires that `exist.jar` and `exist-optional.jar` are installed as Maven artifacts before a 
+build can complete. Use the following commands from your eXistDB installation (usually `/opt/exist`):
+
+    mvn install:install-file -Dfile=./exist.jar -DgroupId=org.exist -DartifactId=exist -Dversion=2.0.0 -Dpackaging=jar
+    mvn install:install-file -Dfile=./exist-optional.jar -DgroupId=org.exist -DartifactId=exist -Dversion=2.0.0 -Dpackaging=jar
+
+That should be a one-off operation for each build machine.
+
 ## Getting started
 
 From the console you can do the following
