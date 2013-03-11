@@ -36,12 +36,12 @@ public class SiteService extends Service<SiteConfiguration> {
   }
 
   @Override
-  public void initialize(Bootstrap<SiteConfiguration> siteConfigurationBootstrap) {
+  public void initialize(Bootstrap<SiteConfiguration> bootstrap) {
 
     // Bundles
-    siteConfigurationBootstrap.addBundle(new ViewBundle());
-    siteConfigurationBootstrap.addBundle(new AssetsBundle("/assets/images", "/images"));
-    siteConfigurationBootstrap.addBundle(new AssetsBundle("/assets/jquery", "/jquery"));
+    bootstrap.addBundle(new ViewBundle());
+    bootstrap.addBundle(new AssetsBundle("/assets/images", "/images"));
+    bootstrap.addBundle(new AssetsBundle("/assets/jquery", "/jquery"));
 
   }
 

@@ -17,17 +17,17 @@ import java.util.List;
  */
 @XmlRootElement(name = "FeatureInfoResponse", namespace = "http://www.esri.com/wms")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(CarbonFields.class)
-public class FeatureInfoResponse implements FieldAccessor<CarbonFields> {
+@XmlSeeAlso(TopsoilCarbonFields.class)
+public class FeatureInfoResponse implements FieldAccessor<TopsoilCarbonFields> {
 
   @XmlElement(name="FIELDS", namespace = "http://www.esri.com/wms")
-  private List<CarbonFields> fields= Lists.newArrayList();
+  private List<TopsoilCarbonFields> fields= Lists.newArrayList();
 
-  public List<CarbonFields> getFields() {
+  public List<TopsoilCarbonFields> getFields() {
     return fields;
   }
 
-  public void setFields(List<CarbonFields> fields) {
+  public void setFields(List<TopsoilCarbonFields> fields) {
     this.fields = fields;
   }
 }

@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlAttribute;
  *         
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CarbonFields {
+public class TopsoilCarbonFields {
 
   @JsonProperty
   @XmlAttribute(name = "DOMINANT_BROAD_HABITAT")

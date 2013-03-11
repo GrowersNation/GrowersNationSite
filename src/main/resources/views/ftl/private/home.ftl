@@ -25,8 +25,6 @@
         <div class="endline"></div>
     </div>
 
-<#--<#include "../includes/common/social.ftl">-->
-
 </div>
 <!-- content end -->
 

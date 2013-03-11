@@ -2,7 +2,7 @@ package org.growersnation.site.model.soil;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
-import org.growersnation.site.model.soil.carbon.CarbonFields;
+import org.growersnation.site.model.soil.carbon.TopsoilCarbonFields;
 import org.growersnation.site.model.soil.nutrients.TopsoilNutrientsFields;
 import org.growersnation.site.model.soil.ph.PHBulkDensityFields;
 import org.growersnation.site.model.soil.texture.SoilTextureFields;
@@ -21,7 +21,7 @@ import java.util.List;
 public class SoilData {
 
   @JsonProperty
-  private List<CarbonFields> carbonFields = Lists.newArrayList();
+  private List<TopsoilCarbonFields> topsoilCarbonFields = Lists.newArrayList();
 
   @JsonProperty
   private List<TopsoilNutrientsFields> topsoilNutrientsFields = Lists.newArrayList();
@@ -32,12 +32,12 @@ public class SoilData {
   @JsonProperty
   private List<SoilTextureFields> soilTextureFields = Lists.newArrayList();
 
-  public List<CarbonFields> getCarbonFields() {
-    return carbonFields;
+  public List<TopsoilCarbonFields> getTopsoilCarbonFields() {
+    return topsoilCarbonFields;
   }
 
-  public void setCarbonFields(List<CarbonFields> carbonFields) {
-    this.carbonFields = carbonFields;
+  public void setTopsoilCarbonFields(List<TopsoilCarbonFields> topsoilCarbonFields) {
+    this.topsoilCarbonFields = topsoilCarbonFields;
   }
 
   public List<TopsoilNutrientsFields> getTopsoilNutrientsFields() {

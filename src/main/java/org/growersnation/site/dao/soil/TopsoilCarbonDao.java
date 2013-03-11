@@ -1,7 +1,7 @@
 package org.growersnation.site.dao.soil;
 
 import org.growersnation.site.dao.BaseHttpDao;
-import org.growersnation.site.model.soil.carbon.CarbonFields;
+import org.growersnation.site.model.soil.carbon.TopsoilCarbonFields;
 import org.growersnation.site.model.soil.carbon.FeatureInfoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class TopsoilCarbonDao extends BaseHttpDao {
    *
    * @return The available topsoil nutrient data near this area (subject to bounding box)
    */
-  public List<CarbonFields> getTopsoilCarbonData(double lat, double lng) {
+  public List<TopsoilCarbonFields> getTopsoilCarbonData(double lat, double lng) {
 
     String bbox = getBBox(lat, lng);
 
@@ -49,7 +49,7 @@ public class TopsoilCarbonDao extends BaseHttpDao {
       .append("&QUERY_LAYERS=")
       .append("0");
 
-    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, CarbonFields.class);
+    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, TopsoilCarbonFields.class);
 
   }
 
