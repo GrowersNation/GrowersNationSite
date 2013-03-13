@@ -1,8 +1,8 @@
-package org.growersnation.site.dao.soil;
+package org.growersnation.site.dao.soil.http;
 
 import org.growersnation.site.dao.BaseHttpDao;
-import org.growersnation.site.model.soil.ph.FeatureInfoResponse;
-import org.growersnation.site.model.soil.ph.PHBulkDensityFields;
+import org.growersnation.site.model.soil.nutrients.FeatureInfoResponse;
+import org.growersnation.site.model.soil.nutrients.TopsoilNutrientsFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,26 +17,26 @@ import java.util.List;
  * @since 0.0.1
  *         
  */
-public class PHBulkDensityDao extends BaseHttpDao {
+public class TopsoilNutrientsDao extends BaseHttpDao {
 
-  private static final Logger log = LoggerFactory.getLogger(PHBulkDensityDao.class);
+  private static final Logger log = LoggerFactory.getLogger(TopsoilNutrientsDao.class);
 
   /**
    * @param lat The precise latitude
    * @param lng The precise longitude
    *
-   * @return The available soil pH data near this area (subject to bounding box)
+   * @return The available topsoil nutrient data near this area (subject to bounding box)
    */
-  public List<PHBulkDensityFields> getPHBulkDensityData(double lat, double lng) {
+  public List<TopsoilNutrientsFields> getTopsoilNutrientsData(double lat, double lng) {
 
     String bbox = getBBox(lat, lng);
 
     StringBuilder sb = new StringBuilder();
-    sb.append("http://lasigpublic.nerc-lancaster.ac.uk/ArcGIS/services/Biodiversity/CS_topsoil_PhBulkDens/MapServer/WMSServer")
+    sb.append("http://lasigpublic.nerc-lancaster.ac.uk/ArcGIS/services//Biodiversity/CS_topsoil_nutrients/MapServer/WMSServer")
       .append("?REQUEST=Getfeatureinfo")
       .append("&VERSION=1.1.1")
       .append("&LAYERS=")
-      .append("0")
+      .append("1")
       .append("&STYLES=default")
       .append("&FORMAT=text/xml")
       .append("&SRS=CRS:84")
@@ -47,9 +47,9 @@ public class PHBulkDensityDao extends BaseHttpDao {
       .append("&X=250")
       .append("&Y=250")
       .append("&QUERY_LAYERS=")
-      .append("0");
+      .append("1");
 
-    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, PHBulkDensityFields.class);
+    return queryFeatureInfoFieldHttpSource(sb.toString(), FeatureInfoResponse.class, TopsoilNutrientsFields.class);
 
   }
 

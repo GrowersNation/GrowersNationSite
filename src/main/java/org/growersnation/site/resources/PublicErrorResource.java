@@ -1,7 +1,9 @@
 package org.growersnation.site.resources;
 
+import com.google.inject.Inject;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
+import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.view.BaseModel;
 import org.growersnation.site.views.PublicFreemarkerView;
 
@@ -21,6 +23,14 @@ import javax.ws.rs.core.MediaType;
 @Path("/error")
 @Produces(MediaType.TEXT_HTML)
 public class PublicErrorResource extends BaseResource {
+
+  /**
+   * @param userDao The security DAO
+   */
+  @Inject
+  public PublicErrorResource(UserDao userDao) {
+    super(userDao);
+  }
 
   /**
    * Provide the 401 Unauthorized page

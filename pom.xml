@@ -79,7 +79,9 @@
       <groupId>com.yammer.dropwizard</groupId>
       <artifactId>dropwizard-testing</artifactId>
       <version>${dropwizard.version}</version>
+      <scope>test</scope>
     </dependency>
+
     <!-- HTML Freemarker views support -->
     <dependency>
       <groupId>com.yammer.dropwizard</groupId>
@@ -91,6 +93,13 @@
       <groupId>com.yammer.dropwizard</groupId>
       <artifactId>dropwizard-client</artifactId>
       <version>${dropwizard.version}</version>
+    </dependency>
+
+    <!-- Guice for dependency injection -->
+    <dependency>
+      <groupId>com.fiestacabin.dropwizard.guice</groupId>
+      <artifactId>dropwizard-guice</artifactId>
+      <version>0.6.1</version>
     </dependency>
 
     <!-- OpenID heavy lifting -->

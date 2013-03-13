@@ -1,17 +1,14 @@
 package org.growersnation.site;
 
-import com.yammer.dropwizard.Service;
+import com.fiestacabin.dropwizard.guice.AutoConfigService;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.views.ViewBundle;
-import com.yammer.dropwizard.views.ViewMessageBodyWriter;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.growersnation.site.auth.openid.OpenIDAuthenticator;
-import org.growersnation.site.auth.openid.OpenIDRestrictedToProvider;
-import org.growersnation.site.health.SiteHealthCheck;
-import org.growersnation.site.model.security.User;
-import org.growersnation.site.resources.PublicHomeResource;
+import org.growersnation.site.guice.SiteServiceModule;
 
 /**
  * <p>Service to provide the following to application:</p>
@@ -23,12 +20,13 @@ import org.growersnation.site.resources.PublicHomeResource;
  * @since 0.0.1
  *         
  */
-public class SiteService extends Service<SiteConfiguration> {
+public class SiteService extends AutoConfigService<SiteConfiguration> {
 
   /**
    * Main entry point to the application
    *
    * @param args CLI arguments
+   *
    * @throws Exception
    */
   public static void main(String[] args) throws Exception {
@@ -46,23 +44,34 @@ public class SiteService extends Service<SiteConfiguration> {
   }
 
   @Override
-  public void run(SiteConfiguration siteConfiguration, Environment environment) throws Exception {
+  protected Injector createInjector(SiteConfiguration configuration) {
+    return Guice.createInjector(new SiteServiceModule());
+  }
+
+  @Override
+  protected void runWithInjector(SiteConfiguration configuration,
+                                 Environment environment,
+                                 Injector injector) throws Exception {
+    // Auto-config will locate
+    // * Health Checks
+    // * Providers
+    // * Injectable Providers
+    // * Resources
+    // * Tasks
+    // * Managed
+    super.runWithInjector(configuration,environment,injector);
+
+    // Add application specific configuration
+
     // Configure authenticator
-    OpenIDAuthenticator authenticator = new OpenIDAuthenticator();
-
-    // Configure environment
-    environment.scanPackagesForResourcesAndProviders(PublicHomeResource.class);
-
-    // Health checks
-    environment.addHealthCheck(new SiteHealthCheck());
+    //OpenIDAuthenticator authenticator = new OpenIDAuthenticator();
 
     // Providers
-    environment.addProvider(new ViewMessageBodyWriter());
-    environment.addProvider(new OpenIDRestrictedToProvider<User>(authenticator, "OpenID"));
+    //environment.addProvider(new ViewMessageBodyWriter());
+    //environment.addProvider(new OpenIDRestrictedToProvider<User>(authenticator, "OpenID"));
 
     // Session handler
     environment.setSessionHandler(new SessionHandler());
-
   }
 
 }

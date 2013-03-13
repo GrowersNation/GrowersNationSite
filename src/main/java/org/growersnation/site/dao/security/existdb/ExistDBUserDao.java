@@ -1,4 +1,4 @@
-package org.growersnation.site.dao.security;
+package org.growersnation.site.dao.security.existdb;
 
 import org.exist.xmldb.EXistResource;
 import org.xmldb.api.DatabaseManager;
@@ -9,7 +9,19 @@ import org.xmldb.api.modules.XMLResource;
 
 import javax.xml.transform.OutputKeys;
 
-public class SecurityDao {
+/**
+ * <p>DAO to provide the following to {@link User}:</p>
+ * <ul>
+ * <li>Access to </li>
+ * </ul>
+ * <p>Example:</p>
+ * <pre>
+ * </pre>
+ *
+ * @since 0.0.1
+ *         
+ */
+public class ExistDBUserDao {
 
   private static String URI = "xmldb:exist://ec2-46-137-56-2.eu-west-1.compute.amazonaws.com/exist/xmlrpc";
   /**

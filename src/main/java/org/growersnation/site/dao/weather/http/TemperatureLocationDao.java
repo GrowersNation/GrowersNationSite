@@ -1,4 +1,4 @@
-package org.growersnation.site.dao.weather;
+package org.growersnation.site.dao.weather.http;
 
 import com.google.common.collect.Lists;
 import org.growersnation.site.dao.BaseHttpDao;

@@ -1,4 +1,4 @@
-package org.growersnation.site.dao.soil;
+package org.growersnation.site.dao.soil.http;
 
 import org.growersnation.site.model.soil.texture.FeatureInfoResponse;
 import org.growersnation.site.model.soil.texture.SoilTextureFields;

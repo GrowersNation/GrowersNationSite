@@ -6,8 +6,9 @@ import com.google.common.collect.Sets;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.server.impl.inject.AbstractHttpContextInjectable;
 import com.yammer.dropwizard.auth.AuthenticationException;
-import com.yammer.dropwizard.auth.Authenticator;
+import org.growersnation.site.SiteConfiguration;
 import org.growersnation.site.model.security.Authority;
+import org.growersnation.site.model.security.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * <p>Injectable to provide the following to {@link OpenIDRestrictedToProvider}:</p>
@@ -27,34 +29,26 @@ import java.util.Set;
  *
  * @since 0.0.1
  */
-class OpenIDRestrictedToInjectable<T> extends AbstractHttpContextInjectable<T> {
+class OpenIDRestrictedToInjectable extends AbstractHttpContextInjectable<User> {
 
   private static final Logger log = LoggerFactory.getLogger(OpenIDRestrictedToInjectable.class);
 
-  private final Authenticator<OpenIDCredentials, T> authenticator;
-  private final String realm;
+  private final OpenIDAuthenticator authenticator;
   private final Set<Authority> requiredAuthorities;
 
   /**
    * @param authenticator The Authenticator that will compare credentials
-   * @param realm The authentication realm
    * @param requiredAuthorities The required authorities as provided by the RestrictedTo annotation
    */
   OpenIDRestrictedToInjectable(
-    Authenticator<OpenIDCredentials, T> authenticator,
-    String realm,
+    OpenIDAuthenticator authenticator,
     Authority[] requiredAuthorities) {
     this.authenticator = authenticator;
-    this.realm = realm;
     this.requiredAuthorities = Sets.newHashSet(Arrays.asList(requiredAuthorities));
   }
 
-  public Authenticator<OpenIDCredentials, T> getAuthenticator() {
+  public OpenIDAuthenticator getAuthenticator() {
     return authenticator;
-  }
-
-  public String getRealm() {
-    return realm;
   }
 
   public Set<Authority> getRequiredAuthorities() {
@@ -62,23 +56,23 @@ class OpenIDRestrictedToInjectable<T> extends AbstractHttpContextInjectable<T> {
   }
 
   @Override
-  public T getValue(HttpContext httpContext) {
+  public User getValue(HttpContext httpContext) {
 
     try {
 
       // Get the Authorization header
       final Map<String,Cookie> cookieMap = httpContext.getRequest().getCookies();
-      if (!cookieMap.containsKey("JSESSIONID")) {
+      if (!cookieMap.containsKey(SiteConfiguration.SESSION_TOKEN_NAME)) {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
 
-      String sessionId = cookieMap.get("JSESSIONID").getValue();
+      UUID sessionToken = UUID.fromString(cookieMap.get(SiteConfiguration.SESSION_TOKEN_NAME).getValue());
 
-      if (sessionId != null) {
+      if (sessionToken != null) {
 
-        final OpenIDCredentials credentials = new OpenIDCredentials(sessionId, requiredAuthorities);
+        final OpenIDCredentials credentials = new OpenIDCredentials(sessionToken, requiredAuthorities);
 
-        final Optional<T> result = authenticator.authenticate(credentials);
+        final Optional<User> result = authenticator.authenticate(credentials);
         if (result.isPresent()) {
           return result.get();
         }
@@ -95,4 +89,3 @@ class OpenIDRestrictedToInjectable<T> extends AbstractHttpContextInjectable<T> {
   }
 
 }
-

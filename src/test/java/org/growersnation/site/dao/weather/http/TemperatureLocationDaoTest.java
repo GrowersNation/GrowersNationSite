@@ -1,4 +1,4 @@
-package org.growersnation.site.dao.weather;
+package org.growersnation.site.dao.weather.http;
 
 import org.growersnation.site.model.weather.temperature.TemperatureLocation;
 import org.growersnation.site.model.weather.temperature.TemperatureLocationList;

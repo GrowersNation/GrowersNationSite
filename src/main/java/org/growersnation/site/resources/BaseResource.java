@@ -1,14 +1,20 @@
 package org.growersnation.site.resources;
 
+import com.google.common.base.Optional;
+import com.google.inject.Inject;
+import org.growersnation.site.SiteConfiguration;
+import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.security.User;
-import org.growersnation.site.model.view.AuthenticatedModel;
 import org.growersnation.site.model.view.BaseModel;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.UriInfo;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * <p>Abstract base class to provide the following to subclasses:</p>
@@ -19,9 +25,12 @@ import java.util.Locale;
  * @since 0.0.1
  *         
  */
-public abstract class BaseResource {
+public class BaseResource {
 
-  protected static final String OPENID_IDENTIFIER_KEY = "openid-identifier-key";
+  /**
+   * User DAO
+   */
+  protected final UserDao userDao;
 
   /**
    * Jersey creates a fresh resource every request so this is safe
@@ -41,8 +50,18 @@ public abstract class BaseResource {
   @Context
   protected HttpServletRequest request;
 
-  public BaseResource() {
+  /**
+   * The current session token (we do not use jsessionid for scalability reasons)
+   */
+  @CookieParam(value = SiteConfiguration.SESSION_TOKEN_NAME)
+  protected String rawSessionToken;
 
+  /**
+   * @param userDao The user DAO
+   */
+  @Inject
+  public BaseResource(UserDao userDao) {
+    this.userDao = userDao;
   }
 
   /**
@@ -65,25 +84,62 @@ public abstract class BaseResource {
   }
 
   /**
-   * Utility method to create a base model present on all non-authenticated resources
+   * <p>Utility method to create a base model</p>
+   *
+   * <p>If a User is present then it will be added to the model, otherwise it will
+   * be left as null</p>
    *
    * @return A base model
    */
   protected BaseModel newBaseModel() {
 
     // Populate the model
-    return new BaseModel();
+    BaseModel model = new BaseModel();
+    Optional<User> user = retrieveUserBySessionTokenCookie();
+    if (user.isPresent()) {
+      model.setUser(user.get());
+    }
+    return model;
   }
 
   /**
-   * Utility method to create a base model present on all authenticated resources
+   * @param user The authenticated user
    *
-   * @return A base model
+   * @return The associated session token for subsequent cookie authentication
    */
-  protected AuthenticatedModel newAuthenticatedModel(User user) {
-
-    // Populate the model
-    return new AuthenticatedModel(user);
+  protected NewCookie replaceSessionTokenCookie(Optional<User> user) {
+    return new NewCookie(
+      SiteConfiguration.SESSION_TOKEN_NAME,
+      user.get().getSessionToken().toString(),   // Value
+      "/",   // Path
+      null,   // Domain
+      null,   // Comment
+      NewCookie.DEFAULT_MAX_AGE, // Max age - expire on close
+      false);
   }
+
+  /**
+   * @return The user associated with the session token
+   */
+  protected Optional<User> retrieveUserBySessionTokenCookie() {
+
+    // Fail fast
+    if (!isSessionTokenPresent()) {
+      return Optional.absent();
+    }
+
+    return userDao.getBySessionToken(UUID.fromString(rawSessionToken));
+
+  }
+
+  /**
+   * @return True if a session token was offered in the request
+   */
+  protected boolean isSessionTokenPresent() {
+
+    return rawSessionToken != null;
+
+  }
+
 
 }

@@ -2,10 +2,12 @@ package org.growersnation.site.resources;
 
 import com.yammer.dropwizard.testing.FixtureHelpers;
 import com.yammer.dropwizard.testing.JsonHelpers;
-import org.growersnation.site.dao.soil.PHBulkDensityDao;
-import org.growersnation.site.dao.soil.SoilTextureDao;
-import org.growersnation.site.dao.soil.TopsoilCarbonDao;
-import org.growersnation.site.dao.soil.TopsoilNutrientsDao;
+import org.growersnation.site.dao.security.UserDao;
+import org.growersnation.site.dao.security.mem.InMemoryUserDao;
+import org.growersnation.site.dao.soil.http.PHBulkDensityDao;
+import org.growersnation.site.dao.soil.http.SoilTextureDao;
+import org.growersnation.site.dao.soil.http.TopsoilCarbonDao;
+import org.growersnation.site.dao.soil.http.TopsoilNutrientsDao;
 import org.growersnation.site.model.soil.SoilData;
 import org.growersnation.site.test.BaseResourceTest;
 import org.junit.Before;
@@ -47,8 +49,10 @@ public class PublicSoilDataResourceTest extends BaseResourceTest {
   @Test
   public void testGetSoilData() {
 
+    UserDao userDao = new InMemoryUserDao();
+
     // Arrange
-    PublicSoilDataResource testObject = new PublicSoilDataResource();
+    PublicSoilDataResource testObject = new PublicSoilDataResource(userDao);
     testObject.setPhBulkDensityDao(phBulkDensityDao);
     testObject.setSoilTextureDao(soilTextureDao);
     testObject.setTopsoilCarbonDao(topsoilCarbonDao);
@@ -65,8 +69,10 @@ public class PublicSoilDataResourceTest extends BaseResourceTest {
   @Test
   public void testPostSoilData() throws IOException {
 
+    UserDao userDao = new InMemoryUserDao();
+
     // Arrange
-    PublicSoilDataResource testObject = new PublicSoilDataResource();
+    PublicSoilDataResource testObject = new PublicSoilDataResource(userDao);
     testObject.setPhBulkDensityDao(phBulkDensityDao);
     testObject.setSoilTextureDao(soilTextureDao);
     testObject.setTopsoilCarbonDao(topsoilCarbonDao);
