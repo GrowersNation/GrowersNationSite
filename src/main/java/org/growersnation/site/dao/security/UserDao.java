@@ -86,4 +86,11 @@ public interface UserDao {
    * that injection works as expected</p>
    */
   void flush();
+
+  /**
+   * Removes the User from the database (or marks it as such for audit purposes)
+   *
+   * @param user The User to delete
+   */
+  void delete(User user);
 }

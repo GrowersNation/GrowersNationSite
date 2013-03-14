@@ -124,4 +124,9 @@ public class InMemoryUserDao implements UserDao {
   public void flush() {
     // Do nothing
   }
+
+  @Override
+  public void delete(User user) {
+    users.remove(user);
+  }
 }

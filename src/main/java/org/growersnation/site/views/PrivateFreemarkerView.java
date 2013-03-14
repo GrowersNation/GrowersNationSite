@@ -16,7 +16,7 @@ import org.growersnation.site.model.view.BaseModel;
 public class PrivateFreemarkerView<T extends BaseModel> extends PublicFreemarkerView<T> {
 
   public PrivateFreemarkerView(String templateName, T model) {
-    super("/views/ftl/"+templateName, model);
+    super(templateName, model);
     Preconditions.checkNotNull(templateName);
     Preconditions.checkNotNull(model);
     Preconditions.checkNotNull(model.getUser());

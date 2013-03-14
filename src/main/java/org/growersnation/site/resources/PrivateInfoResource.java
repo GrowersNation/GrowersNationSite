@@ -8,6 +8,7 @@ import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.security.Authority;
 import org.growersnation.site.model.security.User;
 import org.growersnation.site.model.view.BaseModel;
+import org.growersnation.site.views.PrivateFreemarkerView;
 import org.growersnation.site.views.PublicFreemarkerView;
 
 import javax.ws.rs.GET;
@@ -48,7 +49,7 @@ public class PrivateInfoResource extends BaseResource {
   ) {
 
     BaseModel model = newBaseModel();
-    return new PublicFreemarkerView<BaseModel>("private/home.ftl", model);
+    return new PrivateFreemarkerView<BaseModel>("private/home.ftl", model);
 
   }
 

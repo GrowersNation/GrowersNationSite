@@ -6,13 +6,11 @@ import org.growersnation.site.SiteConfiguration;
 import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.security.User;
 import org.growersnation.site.model.view.BaseModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -27,34 +25,30 @@ import java.util.UUID;
  */
 public class BaseResource {
 
+  private static final Logger log = LoggerFactory.getLogger(BaseResource.class);
+
   /**
    * User DAO
    */
   protected final UserDao userDao;
 
   /**
-   * Jersey creates a fresh resource every request so this is safe
+   * Jersey guarantees request scope
    */
   @Context
   protected UriInfo uriInfo;
 
   /**
-   * Jersey creates a fresh resource every request so this is safe
+   * Jersey guarantees request scope
    */
   @Context
   protected HttpHeaders httpHeaders;
 
   /**
-   * Jersey creates a fresh resource every request so this is safe
+   * Jersey guarantees request scope
    */
   @Context
   protected HttpServletRequest request;
-
-  /**
-   * The current session token (we do not use jsessionid for scalability reasons)
-   */
-  @CookieParam(value = SiteConfiguration.SESSION_TOKEN_NAME)
-  protected String rawSessionToken;
 
   /**
    * @param userDao The user DAO
@@ -95,49 +89,76 @@ public class BaseResource {
 
     // Populate the model
     BaseModel model = new BaseModel();
-    Optional<User> user = retrieveUserBySessionTokenCookie();
-    if (user.isPresent()) {
-      model.setUser(user.get());
+
+    Optional<UUID> sessionTokenOptional = retrieveSessionToken();
+
+    if (sessionTokenOptional.isPresent()) {
+      Optional<User> user = userDao.getBySessionToken(sessionTokenOptional.get());
+      if (user.isPresent()) {
+        model.setUser(user.get());
+      }
     }
+
+    // Add User based on their session token
     return model;
   }
 
   /**
-   * @param user The authenticated user
+   * @param user A user with a session token. If absent then the cookie will be removed.
    *
-   * @return The associated session token for subsequent cookie authentication
+   * @return A cookie with a long term expiry date suitable for use as a session token for OpenID
    */
   protected NewCookie replaceSessionTokenCookie(Optional<User> user) {
-    return new NewCookie(
-      SiteConfiguration.SESSION_TOKEN_NAME,
-      user.get().getSessionToken().toString(),   // Value
-      "/",   // Path
-      null,   // Domain
-      null,   // Comment
-      NewCookie.DEFAULT_MAX_AGE, // Max age - expire on close
-      false);
+
+    if (user.isPresent()) {
+
+      String value = user.get().getSessionToken().toString();
+
+      log.debug("Replacing session token with {}", value);
+
+      return new NewCookie(
+        SiteConfiguration.SESSION_TOKEN_NAME,
+        value,   // Value
+        "/",     // Path
+        null,    // Domain
+        null,    // Comment
+        86400 * 30, // 30 days
+        false);
+    } else {
+      // Remove the session token cookie
+      log.debug("Removing session token");
+
+      return new NewCookie(
+        SiteConfiguration.SESSION_TOKEN_NAME,
+        null,   // Value
+        null,    // Path
+        null,   // Domain
+        null,   // Comment
+        0,      // Expire immediately
+        false);
+    }
   }
 
   /**
-   * @return The user associated with the session token
+   * @return The session token from the cookie if present
    */
-  protected Optional<User> retrieveUserBySessionTokenCookie() {
+  private Optional<UUID> retrieveSessionToken() {
 
-    // Fail fast
-    if (!isSessionTokenPresent()) {
-      return Optional.absent();
+    if (httpHeaders != null && httpHeaders.getCookies() != null) {
+      Cookie sessionTokenCookie = httpHeaders.getCookies().get(SiteConfiguration.SESSION_TOKEN_NAME);
+      if (sessionTokenCookie == null) {
+        return Optional.absent();
+      }
+      String value = sessionTokenCookie.getValue();
+      if (value != null) {
+        // TODO Convert to trace
+        log.debug("Session token: {}", value);
+        return Optional.of(UUID.fromString(value));
+      }
     }
 
-    return userDao.getBySessionToken(UUID.fromString(rawSessionToken));
-
-  }
-
-  /**
-   * @return True if a session token was offered in the request
-   */
-  protected boolean isSessionTokenPresent() {
-
-    return rawSessionToken != null;
+    // No session token
+    return Optional.absent();
 
   }
 

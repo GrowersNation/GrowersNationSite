@@ -7,6 +7,7 @@ import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.security.Authority;
 import org.growersnation.site.model.security.User;
 import org.growersnation.site.model.view.BaseModel;
+import org.growersnation.site.views.PrivateFreemarkerView;
 import org.growersnation.site.views.PublicFreemarkerView;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
@@ -46,7 +47,6 @@ public class PublicOpenIDResource extends BaseResource {
 
   private static final Logger log = LoggerFactory.getLogger(PublicOpenIDResource.class);
 
-  private static final String OPENID_DISCOVERY_KEY = "openid-discovery-key";
   private final static String YAHOO_ENDPOINT = "https://me.yahoo.com";
   private final static String GOOGLE_ENDPOINT = "https://www.google.com/accounts/o8/id";
 
@@ -71,9 +71,36 @@ public class PublicOpenIDResource extends BaseResource {
    * @return A login view with a session token
    */
   @GET
+  @Path("/login")
   public View login() {
     BaseModel model = new BaseModel();
     return new PublicFreemarkerView<BaseModel>("openid/login.ftl", model);
+  }
+
+  /**
+   * @return A login view with a session token
+   */
+  @GET
+  @Path("/logout")
+  public Response logout() {
+
+    BaseModel model = newBaseModel();
+    User user = model.getUser();
+    if (user != null) {
+      user.setSessionToken(null);
+      userDao.saveOrUpdate(user);
+      model.setUser(null);
+    }
+
+    View view = new PublicFreemarkerView<BaseModel>("common/home.ftl", model);
+
+    // Remove the session token which will have the effect of logout
+    return Response
+      .ok()
+      .cookie(replaceSessionTokenCookie(Optional.<User>absent()))
+      .entity(view)
+      .build();
+
   }
 
   /**
@@ -186,7 +213,6 @@ public class PublicOpenIDResource extends BaseResource {
     // Must have a temporary User to be here
     User tempUser = tempUserOptional.get();
 
-
     DiscoveryInformation discovered = tempUser.getOpenIDDiscoveryInformation();
     if (discovered == null) {
       log.debug("Authentication failed due to temp User having no discovery information");
@@ -223,8 +249,11 @@ public class PublicOpenIDResource extends BaseResource {
         // Verified
         AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
 
-        // We have successfully authenticated so use the temporary user to hold the information
-        tempUser.setOpenIDDiscoveryInformation(null);
+        // We have successfully authenticated so remove the temp user
+        // and replace it with a potentially new one
+        userDao.delete(tempUser);
+
+        tempUser = new User();
         tempUser.setOpenIDIdentifier(verified.get().getIdentifier());
         tempUser.setSessionToken(UUID.randomUUID());
 
@@ -264,13 +293,17 @@ public class PublicOpenIDResource extends BaseResource {
           }
         } else {
           // The User has been located by their OpenID identifier
+          log.debug("Found an existing User using OpenID identifier {}", tempUser);
           user = userOptional.get();
         }
 
         // Create a suitable view for the response
-        BaseModel model = newBaseModel();
+        // The session token has changed so we create the base model directly
+        BaseModel model = new BaseModel();
+        model.setUser(user);
 
-        View view = new PublicFreemarkerView<BaseModel>("common/home.ftl", model);
+        // Authenticated
+        View view = new PrivateFreemarkerView<BaseModel>("private/home.ftl", model);
 
         // Refresh the session token cookie
         return Response

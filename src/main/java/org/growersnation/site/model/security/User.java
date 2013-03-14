@@ -77,6 +77,10 @@ public class User {
    * when the session ends
    */
   private UUID sessionToken;
+
+  /**
+   * The authorities for this User (an unauthenticated user has no authorities)
+   */
   private Set<Authority> authorities=Sets.newLinkedHashSet();
 
   /**
@@ -251,6 +255,8 @@ public class User {
       .add("password", "**********")
       .add("emailAddress", emailAddress)
       .add("openIDIdentifier", openIDIdentifier)
+      .add("sessionToken", sessionToken)
+      .add("apiKey", apiKey)
       .add("firstName", firstName)
       .add("lastName", lastName)
       .toString();
