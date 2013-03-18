@@ -1,17 +1,13 @@
 package org.growersnation.site;
 
+import com.hubspot.dropwizard.guice.GuiceBundle;
+import com.yammer.dropwizard.ConfiguredBundle;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.views.ViewBundle;
-import com.yammer.dropwizard.views.ViewMessageBodyWriter;
-import org.eclipse.jetty.server.session.SessionHandler;
-import org.growersnation.site.auth.openid.OpenIDAuthenticator;
-import org.growersnation.site.auth.openid.OpenIDRestrictedToProvider;
-import org.growersnation.site.health.SiteHealthCheck;
-import org.growersnation.site.model.security.User;
-import org.growersnation.site.resources.PublicHomeResource;
+import org.growersnation.site.guice.SiteServiceModule;
 
 /**
  * <p>Service to provide the following to application:</p>
@@ -26,42 +22,57 @@ import org.growersnation.site.resources.PublicHomeResource;
 public class SiteService extends Service<SiteConfiguration> {
 
   /**
+   * The command line arguments to allow DB configuration to take place by Guice
+   */
+  private String[] args;
+
+  /**
    * Main entry point to the application
    *
    * @param args CLI arguments
+   *
    * @throws Exception
    */
   public static void main(String[] args) throws Exception {
-    new SiteService().run(args);
+    new SiteService(args).run(args);
+  }
+
+  /**
+   * @param args The command line arguments to allow DB configuration to take place by Guice
+   */
+  private SiteService(String[] args) {
+    this.args = args;
   }
 
   @Override
-  public void initialize(Bootstrap<SiteConfiguration> siteConfigurationBootstrap) {
+  @SuppressWarnings("unchecked")
+  public void initialize(Bootstrap<SiteConfiguration> bootstrap) {
 
-    // Bundles
-    siteConfigurationBootstrap.addBundle(new ViewBundle());
-    siteConfigurationBootstrap.addBundle(new AssetsBundle("/assets/images", "/images"));
-    siteConfigurationBootstrap.addBundle(new AssetsBundle("/assets/jquery", "/jquery"));
+    // Configure Guice first
+    // TODO The intermediate call to initialize() can be removed after DW 0.6.2+
+    // This will fix the unchecked warning
+    ConfiguredBundle guiceBundle = GuiceBundle
+      .newBuilder()
+      .addModule(new SiteServiceModule(args)) // The main Guice module with bindings
+      .enableAutoConfig(getClass().getPackage().getName()) // Scan application classes
+      .build();
+    guiceBundle.initialize(bootstrap);
+    bootstrap.addBundle(guiceBundle);
+
+    // Add asset bundles
+    bootstrap.addBundle(new AssetsBundle("/assets/images", "/images"));
+    bootstrap.addBundle(new AssetsBundle("/assets/jquery", "/jquery"));
+
+    // Add view bundle
+    bootstrap.addBundle(new ViewBundle());
 
   }
 
   @Override
-  public void run(SiteConfiguration siteConfiguration, Environment environment) throws Exception {
-    // Configure authenticator
-    OpenIDAuthenticator authenticator = new OpenIDAuthenticator();
+  public void run(SiteConfiguration configuration, Environment environment) throws Exception {
 
-    // Configure environment
-    environment.scanPackagesForResourcesAndProviders(PublicHomeResource.class);
-
-    // Health checks
-    environment.addHealthCheck(new SiteHealthCheck());
-
-    // Providers
-    environment.addProvider(new ViewMessageBodyWriter());
-    environment.addProvider(new OpenIDRestrictedToProvider<User>(authenticator, "OpenID"));
-
-    // Session handler
-    environment.setSessionHandler(new SessionHandler());
+    // Add any extra configuration here
+    //environment.addFilter(new GuiceFilter(),"/*");
 
   }
 

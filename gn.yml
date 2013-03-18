@@ -22,6 +22,7 @@ logging:
     # Set specific levels
     "com.sun.jersey.api.client": DEBUG
     "com.yammer": INFO
+    "com.fiestacabin": INFO
     "org.growersnation": DEBUG
 
   # ...
@@ -58,8 +59,6 @@ logging:
     # The timezone used to format dates. HINT: USE THE DEFAULT, UTC.
     timeZone: UTC
 
-# TODO Put only the database connectivity in here
-# Load up all default values directly into the database
 
-# TODO Support a configuration version field
-#
+# Define MongoDB connection string (use IP address for Mac users installing with brew)
+mongoUri: mongodb://127.0.0.1:27017/site

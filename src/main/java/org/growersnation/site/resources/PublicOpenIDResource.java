@@ -1,12 +1,15 @@
 package org.growersnation.site.resources;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import com.yammer.dropwizard.views.View;
-import org.growersnation.site.auth.InMemoryUserCache;
+import org.growersnation.site.SiteConfiguration;
+import org.growersnation.site.auth.openid.DiscoveryInformationMemento;
+import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.security.Authority;
-import org.growersnation.site.model.BaseModel;
 import org.growersnation.site.model.security.User;
+import org.growersnation.site.model.view.BaseModel;
+import org.growersnation.site.views.PrivateFreemarkerView;
 import org.growersnation.site.views.PublicFreemarkerView;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
@@ -25,13 +28,14 @@ import org.openid4java.message.ax.FetchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 /**
  * <p>Resource to provide the following to application:</p>
@@ -47,15 +51,18 @@ public class PublicOpenIDResource extends BaseResource {
 
   private static final Logger log = LoggerFactory.getLogger(PublicOpenIDResource.class);
 
-  private static final String OPENID_DISCOVERY_KEY = "openid-discovery-key";
   private final static String YAHOO_ENDPOINT = "https://me.yahoo.com";
   private final static String GOOGLE_ENDPOINT = "https://www.google.com/accounts/o8/id";
 
   public final ConsumerManager manager;
 
+  private final UserDao userDao;
 
-  public PublicOpenIDResource() {
-
+  /**
+   * @param userDao The User DAO to allow login/logout operations
+   */
+  @Inject
+  public PublicOpenIDResource(UserDao userDao) {
     // Proxy configuration must come before ConsumerManager construction
 //    ProxyProperties proxyProps = new ProxyProperties();
 //    proxyProps.setProxyHostName("some-proxy");
@@ -63,17 +70,45 @@ public class PublicOpenIDResource extends BaseResource {
 //    HttpClientFactory.setProxyProperties(proxyProps);
 
     this.manager = new ConsumerManager();
+    this.userDao = userDao;
 
   }
 
   /**
-   * @return A login view
+   * @return A login view with a session token
    */
   @GET
+  @Path("/login")
   public View login() {
 
-    BaseModel model = new BaseModel();
-    return new PublicFreemarkerView<BaseModel>("openid/login.ftl", model);
+    return new PublicFreemarkerView<BaseModel>("openid/login.ftl", modelBuilder.newBaseModel(httpHeaders));
+  }
+
+  /**
+   * @return A login view with a session token
+   */
+  @GET
+  @Path("/logout")
+  public Response logout() {
+
+    BaseModel model = modelBuilder.newBaseModel(httpHeaders);
+    User user = model.getUser();
+    if (user != null) {
+      // Invalidate the session token
+      user.setSessionToken(null);
+      userDao.saveOrUpdate(user);
+      model.setUser(null);
+    }
+
+    View view = new PublicFreemarkerView<BaseModel>("common/home.ftl", model);
+
+    // Remove the session token which will have the effect of logout
+    return Response
+      .ok()
+      .cookie(replaceSessionTokenCookie(Optional.<User>absent()))
+      .entity(view)
+      .build();
+
   }
 
   /**
@@ -89,6 +124,8 @@ public class PublicOpenIDResource extends BaseResource {
     String identifier
   ) {
 
+    UUID sessionToken = UUID.randomUUID();
+
     try {
 
       // The OpenId server will use this endpoint to provide authentication
@@ -96,13 +133,15 @@ public class PublicOpenIDResource extends BaseResource {
       final String returnToUrl;
       if (request.getServerPort() == 80) {
         returnToUrl = String.format(
-          "http://%s/openid/verify",
-          request.getServerName());
+          "http://%s/openid/verify?token=%s",
+          request.getServerName(),
+          sessionToken);
       } else {
         returnToUrl = String.format(
-          "http://%s:%d/openid/verify",
+          "http://%s:%d/openid/verify?token=%s",
           request.getServerName(),
-          request.getServerPort());
+          request.getServerPort(),
+          sessionToken);
       }
 
       log.debug("Return to URL '{}'", returnToUrl);
@@ -114,9 +153,24 @@ public class PublicOpenIDResource extends BaseResource {
       // and retrieve one service endpoint for authentication
       DiscoveryInformation discovered = manager.associate(discoveries);
 
-      // Store the discovery information in the user's session (creating a new one if required)
-      HttpSession session = request.getSession();
-      session.setAttribute(OPENID_DISCOVERY_KEY, discovered);
+      // Create a memento to rebuild the discovered information in a subsequent request
+      DiscoveryInformationMemento memento = new DiscoveryInformationMemento();
+      if (discovered.getClaimedIdentifier() != null) {
+        memento.setClaimedIdentifier(discovered.getClaimedIdentifier().getIdentifier());
+      }
+      memento.setDelegate(discovered.getDelegateIdentifier());
+      if (discovered.getOPEndpoint() != null) {
+        memento.setOpEndpoint(discovered.getOPEndpoint().toString());
+      }
+      memento.setTypes(discovered.getTypes());
+      memento.setVersion(discovered.getVersion());
+
+      // Create a temporary User to preserve state between requests without
+      // using a session (we could be in a cluster)
+      User tempUser = new User(null, sessionToken);
+      tempUser.setOpenIDDiscoveryInformationMemento(memento);
+      tempUser.setSessionToken(sessionToken);
+      userDao.saveOrUpdate(tempUser);
 
       // Build the AuthRequest message to be sent to the OpenID provider
       AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
@@ -141,7 +195,9 @@ public class PublicOpenIDResource extends BaseResource {
       authReq.addExtension(fetch);
 
       // Redirect the user to their OpenId server authentication process
-      return Response.seeOther(URI.create(authReq.getDestinationUrl(true))).build();
+      return Response
+        .seeOther(URI.create(authReq.getDestinationUrl(true)))
+        .build();
 
     } catch (MessageException e1) {
       log.error("MessageException:", e1);
@@ -160,39 +216,69 @@ public class PublicOpenIDResource extends BaseResource {
    */
   @GET
   @Path("/verify")
-  public View verifyOpenIdServerResponse() {
+  public Response verifyOpenIdServerResponse(@QueryParam("token") String rawToken) {
 
-    BaseModel model = new BaseModel();
+    // Retrieve the previously stored discovery information from the temporary User
+    if (rawToken == null) {
+      log.debug("Authentication failed due to no session token");
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    Optional<User> tempUserOptional = userDao.getBySessionToken(UUID.fromString(rawToken));
+    if (!tempUserOptional.isPresent()) {
+      log.debug("Authentication failed due to no temp User matching session token {}", rawToken);
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    // Must have a temporary User to be here
+    User tempUser = tempUserOptional.get();
+
+    // Retrieve the discovery information
+    final DiscoveryInformationMemento memento = tempUser.getOpenIDDiscoveryInformationMemento();
+    Identifier identifier = new Identifier() {
+      @Override
+      public String getIdentifier() {
+        return memento.getClaimedIdentifier();
+      }
+    };
+
+    DiscoveryInformation discovered;
+    try {
+      discovered = new DiscoveryInformation(
+        URI.create(memento.getOpEndpoint()).toURL(),
+        identifier,
+        memento.getDelegate(),
+        memento.getVersion(),
+        memento.getTypes()
+      );
+    } catch (DiscoveryException e) {
+      throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
+    } catch (MalformedURLException e) {
+      throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
+    }
+
+    // Extract the receiving URL from the HTTP request
+    StringBuffer receivingURL = request.getRequestURL();
+    String queryString = request.getQueryString();
+    if (queryString != null && queryString.length() > 0) {
+      receivingURL.append("?").append(request.getQueryString());
+    }
+    log.debug("Receiving URL = '{}", receivingURL.toString());
+
+    // Extract the parameters from the authentication response
+    // (which comes in as a HTTP request from the OpenID provider)
+    ParameterList parameterList = new ParameterList(request.getParameterMap());
 
     try {
-      // Retrieve the previously stored discovery information
-      DiscoveryInformation discovered = (DiscoveryInformation) request
-        .getSession(false)
-        .getAttribute(OPENID_DISCOVERY_KEY);
-
-      // Fail fast
-      if (discovered == null) {
-        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-      }
-
-      // Extract the receiving URL from the HTTP request
-      StringBuffer receivingURL = request.getRequestURL();
-      String queryString = request.getQueryString();
-      if (queryString != null && queryString.length() > 0) {
-        receivingURL.append("?").append(request.getQueryString());
-      }
-      log.debug("Receiving URL = '{}", receivingURL.toString());
-
-      // Extract the parameters from the authentication response
-      // (which comes in as a HTTP request from the OpenID provider)
-      ParameterList parameterList = new ParameterList(request.getParameterMap());
 
       // Verify the response
       // ConsumerManager needs to be the same (static) instance used
       // to place the authentication request
       // This could be tricky if this service is load-balanced
       VerificationResult verification = manager.verify(
-        receivingURL.toString(), parameterList, discovered);
+        receivingURL.toString(),
+        parameterList,
+        discovered);
 
       // Examine the verification result and extract the verified identifier
       Optional<Identifier> verified = Optional.fromNullable(verification.getVerifiedId());
@@ -200,38 +286,68 @@ public class PublicOpenIDResource extends BaseResource {
         // Verified
         AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
 
-        // Put the result into the user cache
-        User user = new User();
-        user.setOpenIDIdentifier(verified.get().getIdentifier());
+        // We have successfully authenticated so remove the temp user
+        // and replace it with a potentially new one
+        userDao.delete(tempUser);
+
+        tempUser = new User(null, UUID.randomUUID());
+        tempUser.setOpenIDIdentifier(verified.get().getIdentifier());
+
+        // Provide a basic authority in light of successful authentication
+        tempUser.getAuthorities().add(Authority.ROLE_PUBLIC);
 
         // Extract additional information
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
-          user.setEmailAddress(extractEmailAddress(authSuccess));
-          user.setFirstName(extractFirstName(authSuccess));
-          user.setLastName(extractLastName(authSuccess));
+          tempUser.setEmailAddress(extractEmailAddress(authSuccess));
+          tempUser.setFirstName(extractFirstName(authSuccess));
+          tempUser.setLastName(extractLastName(authSuccess));
         }
-        log.info("Extracted a {}", user);
+        log.info("Extracted a temporary {}", tempUser);
 
-        // Bind the authorities to the user
-        Set<Authority> authorities = Sets.newHashSet();
-
-        // Promote to admin if they have a specific email address
-        // (not a good way, but this is only a demo)
-        if ("nobody@example.org".equals(user.getEmailAddress())) {
-          authorities.add(Authority.ROLE_ADMIN);
-          log.info("Granted admin rights");
+        // Search for a pre-existing User matching the temp User
+        Optional<User> userOptional = userDao.getByOpenIDIdentifier(tempUser.getOpenIDIdentifier());
+        User user;
+        if (!userOptional.isPresent()) {
+          // This is either a new registration or the OpenID identifier has changed
+          if (tempUser.getEmailAddress() != null) {
+            userOptional = userDao.getByEmailAddress(tempUser.getEmailAddress());
+            if (!userOptional.isPresent()) {
+              // This is a new User
+              log.debug("Registering new {}", tempUser);
+              user = userDao.saveOrUpdate(tempUser);
+            } else {
+              // The OpenID identifier has changed so update it
+              log.debug("Updating OpenID identifier for {}", tempUser);
+              user = userOptional.get();
+              user.setOpenIDIdentifier(tempUser.getOpenIDIdentifier());
+              user = userDao.saveOrUpdate(user);
+            }
+          } else {
+            // No email address to use as backup
+            log.warn("Rejecting valid authentication. No email address for {}");
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+          }
+        } else {
+          // The User has been located by their OpenID identifier
+          log.debug("Found an existing User using OpenID identifier {}", tempUser);
+          user = userOptional.get();
         }
 
-        authorities.add(Authority.ROLE_PUBLIC);
-        user.setAuthorities(authorities);
+        // Create a suitable view for the response
+        // The session token has changed so we create the base model directly
+        BaseModel model = new BaseModel();
+        model.setUser(user);
 
-        // This user may be returning through a verified cookie on a new session
-        HttpSession session = request.getSession();
+        // Authenticated
+        View view = new PrivateFreemarkerView<BaseModel>("private/home.ftl", model);
 
-        // Use a central store for Users (keeps the session light)
-        InMemoryUserCache.INSTANCE.put(session.getId(), user);
+        // Refresh the session token cookie
+        return Response
+          .ok()
+          .cookie(replaceSessionTokenCookie(Optional.of(user)))
+          .entity(view)
+          .build();
 
-        return new PublicFreemarkerView<BaseModel>("common/home.ftl", model);
       } else {
         log.debug("Failed verification");
       }
@@ -243,6 +359,43 @@ public class PublicOpenIDResource extends BaseResource {
     // Must have failed to be here
     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
+
+  /**
+   * @param user A user with a session token. If absent then the cookie will be removed.
+   *
+   * @return A cookie with a long term expiry date suitable for use as a session token for OpenID
+   */
+  private NewCookie replaceSessionTokenCookie(Optional<User> user) {
+
+    if (user.isPresent()) {
+
+      String value = user.get().getSessionToken().toString();
+
+      log.debug("Replacing session token with {}", value);
+
+      return new NewCookie(
+        SiteConfiguration.SESSION_TOKEN_NAME,
+        value,   // Value
+        "/",     // Path
+        null,    // Domain
+        null,    // Comment
+        86400 * 30, // 30 days
+        false);
+    } else {
+      // Remove the session token cookie
+      log.debug("Removing session token");
+
+      return new NewCookie(
+        SiteConfiguration.SESSION_TOKEN_NAME,
+        null,   // Value
+        null,    // Path
+        null,   // Domain
+        null,   // Comment
+        0,      // Expire immediately
+        false);
+    }
+  }
+
 
   private String extractEmailAddress(AuthSuccess authSuccess) throws MessageException {
     FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);

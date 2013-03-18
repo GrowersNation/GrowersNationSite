@@ -19,6 +19,16 @@ import javax.validation.constraints.NotNull;
  */
 public class SiteConfiguration extends Configuration {
 
+  /**
+   * The cookie name for the session token
+   */
+  public static final String SESSION_TOKEN_NAME ="GN-Session";
+
+  /**
+   * The cookie name for the "remember me" token
+   */
+  private static final String rememberMeName ="GN-RememberMe";
+
   @NotEmpty
   @JsonProperty
   private String assetCachePolicy="maximumSize=10000, expireAfterAccess=5s";
@@ -36,6 +46,10 @@ public class SiteConfiguration extends Configuration {
   @JsonProperty
   private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
+  @NotEmpty
+  @JsonProperty
+  private String mongoUri;
+
   public String getAssetCachePolicy() {
     return assetCachePolicy;
   }
@@ -46,6 +60,18 @@ public class SiteConfiguration extends Configuration {
 
   public String getCookieAuthenticationCachePolicy() {
     return cookieAuthenticationCachePolicy;
+  }
+
+  public String getSessionTokenName() {
+    return SESSION_TOKEN_NAME;
+  }
+
+  public String getRememberMeName() {
+    return rememberMeName;
+  }
+
+  public String getMongoUri() {
+    return mongoUri;
   }
 
 }

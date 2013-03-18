@@ -2,7 +2,7 @@ package org.growersnation.site.resources;
 
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.model.BaseModel;
+import org.growersnation.site.model.view.BaseModel;
 import org.growersnation.site.views.PublicFreemarkerView;
 
 import javax.ws.rs.GET;
@@ -35,8 +35,7 @@ public class PublicHomeResource extends BaseResource {
   @CacheControl(noCache = true)
   public PublicFreemarkerView viewHome() {
 
-    BaseModel model = newBaseModel();
-    return new PublicFreemarkerView<BaseModel>("common/home.ftl",model);
+    return new PublicFreemarkerView<BaseModel>("common/home.ftl",modelBuilder.newBaseModel(httpHeaders));
   }
 
   /**

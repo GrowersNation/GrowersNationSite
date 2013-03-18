@@ -26,7 +26,7 @@ import java.lang.annotation.*;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface RestrictedTo {
   Authority[] value() default Authority.ROLE_ADMIN;
 }

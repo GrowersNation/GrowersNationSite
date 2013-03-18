@@ -4,8 +4,9 @@ import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
 import org.growersnation.site.auth.annotation.RestrictedTo;
 import org.growersnation.site.model.security.Authority;
-import org.growersnation.site.model.BaseModel;
 import org.growersnation.site.model.security.User;
+import org.growersnation.site.model.view.BaseModel;
+import org.growersnation.site.views.PrivateFreemarkerView;
 import org.growersnation.site.views.PublicFreemarkerView;
 
 import javax.ws.rs.GET;
@@ -16,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * <p>Resource to provide the following to application:</p>
  * <ul>
- * <li>Provision of configuration for public home page</li>
+ * <li>Provision of configuration for private use account page</li>
  * </ul>
  *
  * @since 0.0.1
@@ -37,8 +38,7 @@ public class PrivateInfoResource extends BaseResource {
     User publicUser
   ) {
 
-    BaseModel model = newBaseModel();
-    return new PublicFreemarkerView<BaseModel>("private/home.ftl", model);
+    return new PrivateFreemarkerView<BaseModel>("private/home.ftl", modelBuilder.newBaseModel(httpHeaders));
 
   }
 
@@ -54,8 +54,7 @@ public class PrivateInfoResource extends BaseResource {
     User adminUser
   ) {
 
-    BaseModel model = newBaseModel();
-    return new PublicFreemarkerView<BaseModel>("private/admin.ftl", model);
+    return new PrivateFreemarkerView<BaseModel>("private/admin.ftl", modelBuilder.newBaseModel(httpHeaders));
 
   }
 

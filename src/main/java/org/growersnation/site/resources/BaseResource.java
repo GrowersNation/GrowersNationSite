@@ -1,6 +1,9 @@
 package org.growersnation.site.resources;
 
-import org.growersnation.site.model.BaseModel;
+import com.google.inject.Inject;
+import org.growersnation.site.model.ModelBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -17,31 +20,33 @@ import java.util.Locale;
  * @since 0.0.1
  *         
  */
-public abstract class BaseResource {
+public class BaseResource {
 
-  protected static final String OPENID_IDENTIFIER_KEY = "openid-identifier-key";
+  private static final Logger log = LoggerFactory.getLogger(BaseResource.class);
 
   /**
-   * Jersey creates a fresh resource every request so this is safe
+   * Thread-safe model builder instance
+   */
+  @Inject
+  protected ModelBuilder modelBuilder;
+
+  /**
+   * Jersey guarantees request scope
    */
   @Context
   protected UriInfo uriInfo;
 
   /**
-   * Jersey creates a fresh resource every request so this is safe
+   * Jersey guarantees request scope
    */
   @Context
   protected HttpHeaders httpHeaders;
 
   /**
-   * Jersey creates a fresh resource every request so this is safe
+   * Jersey guarantees request scope
    */
   @Context
   protected HttpServletRequest request;
-
-  public BaseResource() {
-
-  }
 
   /**
    * @return The most appropriate locale for the upstream request (never null)
@@ -63,15 +68,9 @@ public abstract class BaseResource {
   }
 
   /**
-   * Utility method to create a base model present on all non-authenticated resources
-   *
-   * @return A base model
+   * @param httpHeaders The request scoped HTTP headers
    */
-  protected BaseModel newBaseModel() {
-
-    // Populate the model
-
-    return new BaseModel();
+  /* package */ void setHttpHeaders(HttpHeaders httpHeaders) {
+    this.httpHeaders = httpHeaders;
   }
-
 }

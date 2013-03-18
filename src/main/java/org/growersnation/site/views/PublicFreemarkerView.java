@@ -1,7 +1,7 @@
 package org.growersnation.site.views;
 
 import com.yammer.dropwizard.views.View;
-import org.growersnation.site.model.BaseModel;
+import org.growersnation.site.model.view.BaseModel;
 
 /**
  * <p>View to provide the following to resources:</p>

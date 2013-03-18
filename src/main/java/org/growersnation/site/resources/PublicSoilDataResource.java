@@ -3,26 +3,33 @@ package org.growersnation.site.resources;
 import com.google.common.base.Splitter;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.dao.PHBulkDensityDao;
-import org.growersnation.site.dao.SoilTextureDao;
-import org.growersnation.site.dao.TopsoilCarbonDao;
-import org.growersnation.site.dao.TopsoilNutrientsDao;
-import org.growersnation.site.model.SoilData;
-import org.growersnation.site.model.carbon.CarbonFields;
-import org.growersnation.site.model.nutrients.TopsoilNutrientsFields;
-import org.growersnation.site.model.ph.PHBulkDensityFields;
-import org.growersnation.site.model.texture.SoilTextureFields;
+import org.bson.types.ObjectId;
+import org.growersnation.site.dao.soil.http.PHBulkDensityDao;
+import org.growersnation.site.dao.soil.http.SoilTextureDao;
+import org.growersnation.site.dao.soil.http.TopsoilCarbonDao;
+import org.growersnation.site.dao.soil.http.TopsoilNutrientsDao;
+import org.growersnation.site.model.soil.SoilData;
+import org.growersnation.site.model.soil.carbon.TopsoilCarbonFields;
+import org.growersnation.site.model.soil.nutrients.TopsoilNutrientsFields;
+import org.growersnation.site.model.soil.ph.PHBulkDensityFields;
+import org.growersnation.site.model.soil.texture.SoilTextureFields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Resource to provide the following to application:</p>
  * <ul>
- * <li>Provision of configuration for public home page</li>
+ * <li>CRUD operations on soil data via API</li>
+ * <li>CRUD operations on soil data via web forms</li>
  * </ul>
  *
  * @since 0.0.1
@@ -31,20 +38,23 @@ import java.util.List;
 @Produces(MediaType.TEXT_HTML)
 public class PublicSoilDataResource extends BaseResource {
 
-  PHBulkDensityDao phBulkDensityDao = new PHBulkDensityDao();
-  SoilTextureDao soilTextureDao = new SoilTextureDao();
-  TopsoilCarbonDao topsoilCarbonDao = new TopsoilCarbonDao();
-  TopsoilNutrientsDao topsoilNutrientsDao = new TopsoilNutrientsDao();
+  private static final Logger log = LoggerFactory.getLogger(PublicSoilDataResource.class);
+
+  private PHBulkDensityDao phBulkDensityDao = new PHBulkDensityDao();
+  private SoilTextureDao soilTextureDao = new SoilTextureDao();
+  private TopsoilCarbonDao topsoilCarbonDao = new TopsoilCarbonDao();
+  private TopsoilNutrientsDao topsoilNutrientsDao = new TopsoilNutrientsDao();
 
   /**
    * Provide soil data based on a Lat/Lng combination
-
+   * @param rawLocation The location expressed as lat,long
+   * @param rawRadius The radius in 0.02
    *
    * @return A localised view containing HTML
    */
   @GET
   @Timed
-  @CacheControl(noCache = true)
+  @CacheControl(maxAge = 6, maxAgeUnit = TimeUnit.HOURS)
   @Produces(MediaType.APPLICATION_JSON)
   public SoilData getSoilData(
     @QueryParam("location") String rawLocation,
@@ -54,11 +64,12 @@ public class PublicSoilDataResource extends BaseResource {
     Iterator<String> iterator = Splitter.on(",").split(rawLocation).iterator();
 
     final double lat;
-    final double lon;
+    final double lng;
+
     try {
 
       lat = Double.valueOf(iterator.next());
-      lon = Double.valueOf(iterator.next());
+      lng = Double.valueOf(iterator.next());
 
     } catch (NumberFormatException e) {
 
@@ -66,13 +77,15 @@ public class PublicSoilDataResource extends BaseResource {
 
     }
 
-    List<CarbonFields> carbonFieldsList = topsoilCarbonDao.getTopsoilCarbonData(lat, lon);
-    List<PHBulkDensityFields> phBulkDensityFieldsList = phBulkDensityDao.getPHBulkDensityData(lat, lon);
-    List<SoilTextureFields> soilTextureFieldsList = soilTextureDao.getSoilTextureData(lat, lon);
-    List<TopsoilNutrientsFields> topsoilNutrientsFieldsList = topsoilNutrientsDao.getTopsoilNutrientsData(lat, lon);
+    // Assume that the DAOs are perfectly accurate for their APIs
+    List<TopsoilCarbonFields> topsoilCarbonFieldsList = topsoilCarbonDao.getTopsoilCarbonData(lat, lng);
+    List<PHBulkDensityFields> phBulkDensityFieldsList = phBulkDensityDao.getPHBulkDensityData(lat, lng);
+    List<SoilTextureFields> soilTextureFieldsList = soilTextureDao.getSoilTextureData(lat, lng);
+    List<TopsoilNutrientsFields> topsoilNutrientsFieldsList = topsoilNutrientsDao.getTopsoilNutrientsData(lat, lng);
 
-    SoilData soilData = new SoilData();
-    soilData.setCarbonFields(carbonFieldsList);
+    //
+    SoilData soilData = new SoilData(ObjectId.get().toString());
+    soilData.setTopsoilCarbonFields(topsoilCarbonFieldsList);
     soilData.setPhBulkDensityFields(phBulkDensityFieldsList);
     soilData.setSoilTextureFields(soilTextureFieldsList);
     soilData.setTopsoilNutrientsFields(topsoilNutrientsFieldsList);
@@ -80,6 +93,27 @@ public class PublicSoilDataResource extends BaseResource {
     return soilData;
 
   }
+
+  /**
+   * Provide soil data based on a Lat/Lng combination
+   *
+   * @return A localised view containing HTML
+   */
+  @POST
+  public Response postSoilData(SoilData soilData) {
+
+    log.info("Soil data = ",soilData.toString());
+
+    URI location = UriBuilder
+      .fromResource(PublicSoilDataResource.class)
+      .queryParam("id",12345)
+      .build()
+      ;
+
+    return Response.created(location).build();
+
+  }
+
 
   /* package */ void setPhBulkDensityDao(PHBulkDensityDao phBulkDensityDao) {
     this.phBulkDensityDao = phBulkDensityDao;

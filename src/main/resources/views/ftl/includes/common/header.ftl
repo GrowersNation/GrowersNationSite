@@ -74,14 +74,15 @@
                                         potential</a></li>
                                 </ul>
                             </li>
-                            <li class="page_item page-item-53"><a href="http://www.growers-nation.org/beta/">Beta</a>
+                            <li class="page_item page-item-53">
+                            <#if model.user?? >
+                              <a href="/private/home">Account</a>
                                 <ul class='children'>
-                                    <li class="page_item page-item-343"><a
-                                            href="http://www.growers-nation.org/beta/agronomy-data-map/">Open source
-                                        data sets</a></li>
-                                    <li class="page_item page-item-363"><a
-                                            href="http://www.growers-nation.org/beta/the-app/">The app</a></li>
+                                    <li class="page_item page-item-282"><a href="/openid/logout">Logout</a></li>
                                 </ul>
+                            <#else>
+                              <a href="/openid/login">Login</a>
+                            </#if>
                             </li>
                         </ul>
 
