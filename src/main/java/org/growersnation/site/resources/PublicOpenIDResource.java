@@ -3,6 +3,8 @@ package org.growersnation.site.resources;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.yammer.dropwizard.views.View;
+import org.growersnation.site.SiteConfiguration;
+import org.growersnation.site.auth.openid.DiscoveryInformationMemento;
 import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.security.Authority;
 import org.growersnation.site.model.security.User;
@@ -28,7 +30,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -52,12 +56,13 @@ public class PublicOpenIDResource extends BaseResource {
 
   public final ConsumerManager manager;
 
+  private final UserDao userDao;
+
   /**
-   * @param userDao The security DAO
+   * @param userDao The User DAO to allow login/logout operations
    */
   @Inject
   public PublicOpenIDResource(UserDao userDao) {
-    super(userDao);
     // Proxy configuration must come before ConsumerManager construction
 //    ProxyProperties proxyProps = new ProxyProperties();
 //    proxyProps.setProxyHostName("some-proxy");
@@ -65,6 +70,8 @@ public class PublicOpenIDResource extends BaseResource {
 //    HttpClientFactory.setProxyProperties(proxyProps);
 
     this.manager = new ConsumerManager();
+    this.userDao = userDao;
+
   }
 
   /**
@@ -73,8 +80,8 @@ public class PublicOpenIDResource extends BaseResource {
   @GET
   @Path("/login")
   public View login() {
-    BaseModel model = new BaseModel();
-    return new PublicFreemarkerView<BaseModel>("openid/login.ftl", model);
+
+    return new PublicFreemarkerView<BaseModel>("openid/login.ftl", modelBuilder.newBaseModel(httpHeaders));
   }
 
   /**
@@ -84,9 +91,10 @@ public class PublicOpenIDResource extends BaseResource {
   @Path("/logout")
   public Response logout() {
 
-    BaseModel model = newBaseModel();
+    BaseModel model = modelBuilder.newBaseModel(httpHeaders);
     User user = model.getUser();
     if (user != null) {
+      // Invalidate the session token
       user.setSessionToken(null);
       userDao.saveOrUpdate(user);
       model.setUser(null);
@@ -145,10 +153,22 @@ public class PublicOpenIDResource extends BaseResource {
       // and retrieve one service endpoint for authentication
       DiscoveryInformation discovered = manager.associate(discoveries);
 
+      // Create a memento to rebuild the discovered information in a subsequent request
+      DiscoveryInformationMemento memento = new DiscoveryInformationMemento();
+      if (discovered.getClaimedIdentifier() != null) {
+        memento.setClaimedIdentifier(discovered.getClaimedIdentifier().getIdentifier());
+      }
+      memento.setDelegate(discovered.getDelegateIdentifier());
+      if (discovered.getOPEndpoint() != null) {
+        memento.setOpEndpoint(discovered.getOPEndpoint().toString());
+      }
+      memento.setTypes(discovered.getTypes());
+      memento.setVersion(discovered.getVersion());
+
       // Create a temporary User to preserve state between requests without
       // using a session (we could be in a cluster)
-      User tempUser = new User();
-      tempUser.setOpenIDDiscoveryInformation(discovered);
+      User tempUser = new User(null, sessionToken);
+      tempUser.setOpenIDDiscoveryInformationMemento(memento);
       tempUser.setSessionToken(sessionToken);
       userDao.saveOrUpdate(tempUser);
 
@@ -213,12 +233,29 @@ public class PublicOpenIDResource extends BaseResource {
     // Must have a temporary User to be here
     User tempUser = tempUserOptional.get();
 
-    DiscoveryInformation discovered = tempUser.getOpenIDDiscoveryInformation();
-    if (discovered == null) {
-      log.debug("Authentication failed due to temp User having no discovery information");
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
+    // Retrieve the discovery information
+    final DiscoveryInformationMemento memento = tempUser.getOpenIDDiscoveryInformationMemento();
+    Identifier identifier = new Identifier() {
+      @Override
+      public String getIdentifier() {
+        return memento.getClaimedIdentifier();
+      }
+    };
 
+    DiscoveryInformation discovered;
+    try {
+      discovered = new DiscoveryInformation(
+        URI.create(memento.getOpEndpoint()).toURL(),
+        identifier,
+        memento.getDelegate(),
+        memento.getVersion(),
+        memento.getTypes()
+      );
+    } catch (DiscoveryException e) {
+      throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
+    } catch (MalformedURLException e) {
+      throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
+    }
 
     // Extract the receiving URL from the HTTP request
     StringBuffer receivingURL = request.getRequestURL();
@@ -253,9 +290,8 @@ public class PublicOpenIDResource extends BaseResource {
         // and replace it with a potentially new one
         userDao.delete(tempUser);
 
-        tempUser = new User();
+        tempUser = new User(null, UUID.randomUUID());
         tempUser.setOpenIDIdentifier(verified.get().getIdentifier());
-        tempUser.setSessionToken(UUID.randomUUID());
 
         // Provide a basic authority in light of successful authentication
         tempUser.getAuthorities().add(Authority.ROLE_PUBLIC);
@@ -323,6 +359,43 @@ public class PublicOpenIDResource extends BaseResource {
     // Must have failed to be here
     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
+
+  /**
+   * @param user A user with a session token. If absent then the cookie will be removed.
+   *
+   * @return A cookie with a long term expiry date suitable for use as a session token for OpenID
+   */
+  private NewCookie replaceSessionTokenCookie(Optional<User> user) {
+
+    if (user.isPresent()) {
+
+      String value = user.get().getSessionToken().toString();
+
+      log.debug("Replacing session token with {}", value);
+
+      return new NewCookie(
+        SiteConfiguration.SESSION_TOKEN_NAME,
+        value,   // Value
+        "/",     // Path
+        null,    // Domain
+        null,    // Comment
+        86400 * 30, // 30 days
+        false);
+    } else {
+      // Remove the session token cookie
+      log.debug("Removing session token");
+
+      return new NewCookie(
+        SiteConfiguration.SESSION_TOKEN_NAME,
+        null,   // Value
+        null,    // Path
+        null,   // Domain
+        null,   // Comment
+        0,      // Expire immediately
+        false);
+    }
+  }
+
 
   private String extractEmailAddress(AuthSuccess authSuccess) throws MessageException {
     FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);

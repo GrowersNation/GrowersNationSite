@@ -1,9 +1,7 @@
 package org.growersnation.site.resources;
 
-import com.google.inject.Inject;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.view.BaseModel;
 import org.growersnation.site.views.PublicFreemarkerView;
 
@@ -25,14 +23,6 @@ import javax.ws.rs.core.MediaType;
 public class PublicErrorResource extends BaseResource {
 
   /**
-   * @param userDao The security DAO
-   */
-  @Inject
-  public PublicErrorResource(UserDao userDao) {
-    super(userDao);
-  }
-
-  /**
    * Provide the 401 Unauthorized page
    *
    * @return A localised view containing HTML
@@ -43,10 +33,7 @@ public class PublicErrorResource extends BaseResource {
   @CacheControl(noCache = true)
   public PublicFreemarkerView view401() {
 
-    // Populate the model
-    BaseModel model = newBaseModel();
-
-    return new PublicFreemarkerView<BaseModel>("error/401.ftl",model);
+    return new PublicFreemarkerView<BaseModel>("error/401.ftl",modelBuilder.newBaseModel(httpHeaders));
   }
 
   /**
@@ -60,10 +47,7 @@ public class PublicErrorResource extends BaseResource {
   @CacheControl(noCache = true)
   public PublicFreemarkerView view404() {
 
-    // Populate the model
-    BaseModel model = newBaseModel();
-
-    return new PublicFreemarkerView<BaseModel>("error/404.ftl",model);
+    return new PublicFreemarkerView<BaseModel>("error/404.ftl",modelBuilder.newBaseModel(httpHeaders));
   }
 
   /**
@@ -77,9 +61,6 @@ public class PublicErrorResource extends BaseResource {
   @CacheControl(noCache = true)
   public PublicFreemarkerView view500() {
 
-    // Populate the model
-    BaseModel model = newBaseModel();
-
-    return new PublicFreemarkerView<BaseModel>("error/500.ftl",model);
+    return new PublicFreemarkerView<BaseModel>("error/500.ftl",modelBuilder.newBaseModel(httpHeaders));
   }
 }

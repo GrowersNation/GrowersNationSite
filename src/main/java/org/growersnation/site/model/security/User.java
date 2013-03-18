@@ -1,9 +1,13 @@
 package org.growersnation.site.model.security;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
+import org.growersnation.site.auth.openid.DiscoveryInformationMemento;
 import org.growersnation.site.utils.ObjectUtils;
-import org.openid4java.discovery.DiscoveryInformation;
+import org.mongojack.Id;
+import org.mongojack.ObjectId;
 
 import java.util.Set;
 import java.util.UUID;
@@ -18,40 +22,47 @@ import java.util.UUID;
 public class User {
 
   /**
-   * Numerical ID to allow faster indexing (for internal use)
+   * Unique identifier for this entity
    */
-  private Long id = null;
+  @JsonProperty
+  private String id = null;
 
   /**
    * <p>A username (optional for anonymity reasons)</p>
    */
+  @JsonProperty
   private String userName = null;
 
   /**
    * <p>A user password (not plaintext and optional for anonymity reasons)</p>
    */
+  @JsonProperty
   private String passwordDigest = null;
 
   /**
    * <p>The OpenID discovery information used in phase 1 of authenticating against an OpenID server</p>
    * <p>Once the OpenID identifier is in place, this can be safely deleted</p>
    */
-  private DiscoveryInformation openIDDiscoveryInformation;
+  @JsonProperty
+  private DiscoveryInformationMemento openIDDiscoveryInformationMemento;
 
   /**
    * <p>An OpenID identifier used in phase 2 after authenticating against an OpenID server</p>
    */
+  @JsonProperty
   private String openIDIdentifier = null;
+
 
   /**
    * <p>The user's first name (optional)</p>
    */
+  @JsonProperty
   private String firstName = null;
-
 
   /**
    * <p>The user's last name (optional)</p>
    */
+  @JsonProperty
   private String lastName = null;
 
   /**
@@ -59,38 +70,53 @@ public class User {
    * revealing a sequential ID that could be guessed.
    * Typically used as an API key</p>
    */
+  @JsonProperty
   private String apiKey = null;
 
   /**
    * <p>Used as a shared secret to authenticate this user to the upstream server. Typically
    * part of an HMAC authentication scheme.</p>
    */
+  @JsonProperty
   private String secretKey = null;
 
   /**
    * <p>An email address</p>
    */
+  @JsonProperty
   private String emailAddress = null;
 
   /**
    * A shared secret between the cluster and the user's browser that is revoked
    * when the session ends
    */
+  @JsonProperty
   private UUID sessionToken;
-
   /**
    * The authorities for this User (an unauthenticated user has no authorities)
    */
+  @JsonProperty
   private Set<Authority> authorities=Sets.newLinkedHashSet();
 
+  @JsonCreator
+  public User(
+    @Id
+    @ObjectId
+    @JsonProperty("id") String id,
+    @JsonProperty("sessionToken") UUID sessionToken
+  ) {
+    this.id = id;
+    this.sessionToken = sessionToken;
+  }
+
   /**
-   * @return The internal unique ID
+   * @return The unique ID for this entity
    */
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -138,16 +164,12 @@ public class User {
     this.emailAddress = emailAddress;
   }
 
-  /**
-   *
-   * @return The OpenID discovery information (phase 1 of authentication)
-   */
-  public DiscoveryInformation getOpenIDDiscoveryInformation() {
-    return openIDDiscoveryInformation;
+  public DiscoveryInformationMemento getOpenIDDiscoveryInformationMemento() {
+    return openIDDiscoveryInformationMemento;
   }
 
-  public void setOpenIDDiscoveryInformation(DiscoveryInformation openIDDiscoveryInformation) {
-    this.openIDDiscoveryInformation = openIDDiscoveryInformation;
+  public void setOpenIDDiscoveryInformationMemento(DiscoveryInformationMemento openIDDiscoveryInformationMemento) {
+    this.openIDDiscoveryInformationMemento = openIDDiscoveryInformationMemento;
   }
 
   /**

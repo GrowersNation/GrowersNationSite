@@ -2,8 +2,6 @@ package org.growersnation.site.resources;
 
 import com.yammer.dropwizard.testing.FixtureHelpers;
 import com.yammer.dropwizard.testing.JsonHelpers;
-import org.growersnation.site.dao.security.UserDao;
-import org.growersnation.site.dao.security.mem.InMemoryUserDao;
 import org.growersnation.site.dao.soil.http.PHBulkDensityDao;
 import org.growersnation.site.dao.soil.http.SoilTextureDao;
 import org.growersnation.site.dao.soil.http.TopsoilCarbonDao;
@@ -16,7 +14,7 @@ import org.junit.Test;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,10 +47,8 @@ public class PublicSoilDataResourceTest extends BaseResourceTest {
   @Test
   public void testGetSoilData() {
 
-    UserDao userDao = new InMemoryUserDao();
-
     // Arrange
-    PublicSoilDataResource testObject = new PublicSoilDataResource(userDao);
+    PublicSoilDataResource testObject = new PublicSoilDataResource();
     testObject.setPhBulkDensityDao(phBulkDensityDao);
     testObject.setSoilTextureDao(soilTextureDao);
     testObject.setTopsoilCarbonDao(topsoilCarbonDao);
@@ -62,17 +58,15 @@ public class PublicSoilDataResourceTest extends BaseResourceTest {
     SoilData soilData = testObject.getSoilData("51.65,0.1",null);
 
     // Assert
-    assertNotNull(soilData);
+    assertThat(soilData).isNotNull();
 
   }
 
   @Test
   public void testPostSoilData() throws IOException {
 
-    UserDao userDao = new InMemoryUserDao();
-
     // Arrange
-    PublicSoilDataResource testObject = new PublicSoilDataResource(userDao);
+    PublicSoilDataResource testObject = new PublicSoilDataResource();
     testObject.setPhBulkDensityDao(phBulkDensityDao);
     testObject.setSoilTextureDao(soilTextureDao);
     testObject.setTopsoilCarbonDao(topsoilCarbonDao);
@@ -82,7 +76,7 @@ public class PublicSoilDataResourceTest extends BaseResourceTest {
     Response response = testObject.postSoilData(expectedSoilData);
 
     // Assert
-    assertNotNull(response);
+    assertThat(response).isNotNull();
 
   }
 }

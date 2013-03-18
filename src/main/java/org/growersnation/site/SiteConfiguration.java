@@ -46,6 +46,10 @@ public class SiteConfiguration extends Configuration {
   @JsonProperty
   private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
+  @NotEmpty
+  @JsonProperty
+  private String mongoUri;
+
   public String getAssetCachePolicy() {
     return assetCachePolicy;
   }
@@ -64,6 +68,10 @@ public class SiteConfiguration extends Configuration {
 
   public String getRememberMeName() {
     return rememberMeName;
+  }
+
+  public String getMongoUri() {
+    return mongoUri;
   }
 
 }

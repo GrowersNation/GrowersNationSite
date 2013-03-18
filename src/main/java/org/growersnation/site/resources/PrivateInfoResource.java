@@ -1,10 +1,8 @@
 package org.growersnation.site.resources;
 
-import com.google.inject.Inject;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
 import org.growersnation.site.auth.annotation.RestrictedTo;
-import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.security.Authority;
 import org.growersnation.site.model.security.User;
 import org.growersnation.site.model.view.BaseModel;
@@ -29,14 +27,6 @@ import javax.ws.rs.core.MediaType;
 public class PrivateInfoResource extends BaseResource {
 
   /**
-   * @param userDao The security DAO
-   */
-  @Inject
-  public PrivateInfoResource(UserDao userDao) {
-    super(userDao);
-  }
-
-  /**
    * @return The private home view if authenticated
    */
   @GET
@@ -48,8 +38,7 @@ public class PrivateInfoResource extends BaseResource {
     User publicUser
   ) {
 
-    BaseModel model = newBaseModel();
-    return new PrivateFreemarkerView<BaseModel>("private/home.ftl", model);
+    return new PrivateFreemarkerView<BaseModel>("private/home.ftl", modelBuilder.newBaseModel(httpHeaders));
 
   }
 
@@ -65,8 +54,7 @@ public class PrivateInfoResource extends BaseResource {
     User adminUser
   ) {
 
-    BaseModel model = newBaseModel();
-    return new PublicFreemarkerView<BaseModel>("private/admin.ftl", model);
+    return new PrivateFreemarkerView<BaseModel>("private/admin.ftl", modelBuilder.newBaseModel(httpHeaders));
 
   }
 

@@ -1,12 +1,12 @@
 package org.growersnation.site.resources;
 
 import com.google.inject.Inject;
-import com.sun.jersey.api.core.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -27,16 +27,21 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
 
   private final PublicErrorResource publicErrorResource;
 
+  /**
+   * Request scoped injection
+   */
   @Context
-  HttpContext httpContext;
+  private HttpHeaders httpHeaders;
 
   @Inject
   public RuntimeExceptionMapper(PublicErrorResource publicErrorResource) {
     this.publicErrorResource = publicErrorResource;
+    publicErrorResource.setHttpHeaders(httpHeaders);
   }
 
   @Override
   public Response toResponse(RuntimeException runtime) {
+
 
     // Build default response
     Response defaultResponse = Response
@@ -78,7 +83,7 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
     // Warn logging
 
     // Error logging
-    log.error(exception.getMessage());
+    log.error(exception.getMessage(),exception);
 
     return defaultResponse;
   }

@@ -1,10 +1,8 @@
 package org.growersnation.site.resources;
 
 import com.google.common.base.Splitter;
-import com.google.inject.Inject;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.dao.soil.http.PHBulkDensityDao;
 import org.growersnation.site.dao.soil.http.SoilTextureDao;
 import org.growersnation.site.dao.soil.http.TopsoilCarbonDao;
@@ -37,14 +35,6 @@ public class PublicWeatherDataResource extends BaseResource {
   TopsoilCarbonDao topsoilCarbonDao = new TopsoilCarbonDao();
   TopsoilNutrientsDao topsoilNutrientsDao = new TopsoilNutrientsDao();
   TemperatureLocationDao temperatureLocationDao = new TemperatureLocationDao();
-
-  /**
-   * @param userDao The security DAO
-   */
-  @Inject
-  public PublicWeatherDataResource(UserDao userDao) {
-    super(userDao);
-  }
 
   /**
    * Provide weather data based on a Lat/Lng combination

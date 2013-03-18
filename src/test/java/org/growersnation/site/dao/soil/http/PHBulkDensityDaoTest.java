@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class PHBulkDensityDaoTest {
 
@@ -24,11 +24,11 @@ public class PHBulkDensityDaoTest {
 
     FeatureInfoResponse fir = (FeatureInfoResponse) context.createUnmarshaller().unmarshal(is);
 
-    assertEquals(1,fir.getFields().size());
+    assertThat(fir.getFields().size()).isEqualTo(1);
 
     PHBulkDensityFields fields = fir.getFields().get(0);
 
-    assertEquals("11.8",fields.getCnRatio1998());
+    assertThat(fields.getCnRatio1998()).isEqualTo("11.8");
 
   }
 
@@ -42,9 +42,8 @@ public class PHBulkDensityDaoTest {
 
     List<PHBulkDensityFields> fields = testObject.getPHBulkDensityData(51.2, 0.1);
 
-    assertEquals(1,fields.size());
-
-    assertEquals("11.8",fields.get(0).getCnRatio1998());
+    assertThat(fields.size()).isEqualTo(1);
+    assertThat(fields.get(0).getCnRatio1998()).isEqualTo("11.8");
 
   }
 

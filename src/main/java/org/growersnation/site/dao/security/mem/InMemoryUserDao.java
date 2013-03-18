@@ -1,6 +1,7 @@
 package org.growersnation.site.dao.security.mem;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.PaginationData;
@@ -25,8 +26,9 @@ public class InMemoryUserDao implements UserDao {
   @Override
   public Optional<User> getById(Long id) {
     synchronized (users) {
+      Preconditions.checkNotNull(id);
       for (User user : users) {
-        if (user.getId().equals(id)) {
+        if (id.equals(user.getId())) {
           return Optional.of(user);
         }
       }
@@ -37,8 +39,9 @@ public class InMemoryUserDao implements UserDao {
   @Override
   public Optional<User> getByApiKey(String apiKey) {
     synchronized (users) {
+      Preconditions.checkNotNull(apiKey);
       for (User user : users) {
-        if (user.getApiKey().equals(apiKey)) {
+        if (apiKey.equals(user.getApiKey())) {
           return Optional.of(user);
         }
       }
@@ -49,8 +52,9 @@ public class InMemoryUserDao implements UserDao {
   @Override
   public Optional<User> getByEmailAddress(String emailAddress) {
     synchronized (users) {
+      Preconditions.checkNotNull(emailAddress);
       for (User user : users) {
-        if (user.getEmailAddress().equals(emailAddress)) {
+        if (emailAddress.equals(user.getEmailAddress())) {
           return Optional.of(user);
         }
       }
@@ -61,8 +65,9 @@ public class InMemoryUserDao implements UserDao {
   @Override
   public Optional<User> getByOpenIDIdentifier(String openIDIdentifier) {
     synchronized (users) {
+      Preconditions.checkNotNull(openIDIdentifier);
       for (User user : users) {
-        if (user.getOpenIDIdentifier().equals(openIDIdentifier)) {
+        if (openIDIdentifier.equals(user.getOpenIDIdentifier())) {
           return Optional.of(user);
         }
       }
@@ -73,8 +78,9 @@ public class InMemoryUserDao implements UserDao {
   @Override
   public Optional<User> getBySessionToken(UUID sessionToken) {
     synchronized (users) {
+      Preconditions.checkNotNull(sessionToken);
       for (User user : users) {
-        if (user.getSessionToken().equals(sessionToken)) {
+        if (sessionToken.equals(user.getSessionToken())) {
           return Optional.of(user);
         }
       }
@@ -85,9 +91,10 @@ public class InMemoryUserDao implements UserDao {
   @Override
   public Optional<User> getByCredentials(String username, String passwordDigest) {
     synchronized (users) {
+      Preconditions.checkNotNull(passwordDigest);
       for (User user : users) {
-        if (user.getUserName().equals(username) &&
-          user.getPasswordDigest().equals(passwordDigest)
+        if (username.equals(user.getUserName()) &&
+          passwordDigest.equals(user.getPasswordDigest())
           ) {
           return Optional.of(user);
         }
@@ -105,6 +112,7 @@ public class InMemoryUserDao implements UserDao {
   public User saveOrUpdate(User user) {
 
     synchronized (users) {
+      Preconditions.checkNotNull(user);
       int index = users.indexOf(user);
       if (index == -1) {
         user.setId(users.size() + 1L);

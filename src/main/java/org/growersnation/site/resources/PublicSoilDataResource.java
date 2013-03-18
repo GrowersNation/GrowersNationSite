@@ -1,10 +1,8 @@
 package org.growersnation.site.resources;
 
 import com.google.common.base.Splitter;
-import com.google.inject.Inject;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.dao.soil.http.PHBulkDensityDao;
 import org.growersnation.site.dao.soil.http.SoilTextureDao;
 import org.growersnation.site.dao.soil.http.TopsoilCarbonDao;
@@ -29,7 +27,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * <p>Resource to provide the following to application:</p>
  * <ul>
- * <li>Provision of configuration for public home page</li>
+ * <li>CRUD operations on soil data via API</li>
+ * <li>CRUD operations on soil data via web forms</li>
  * </ul>
  *
  * @since 0.0.1
@@ -44,14 +43,6 @@ public class PublicSoilDataResource extends BaseResource {
   private SoilTextureDao soilTextureDao = new SoilTextureDao();
   private TopsoilCarbonDao topsoilCarbonDao = new TopsoilCarbonDao();
   private TopsoilNutrientsDao topsoilNutrientsDao = new TopsoilNutrientsDao();
-
-  /**
-   * @param userDao The security DAO
-   */
-  @Inject
-  public PublicSoilDataResource(UserDao userDao) {
-    super(userDao);
-  }
 
   /**
    * Provide soil data based on a Lat/Lng combination

@@ -12,8 +12,7 @@ import org.growersnation.site.auth.annotation.RestrictedTo;
 /**
  * <p>Authentication provider to provide the following to Jersey:</p>
  * <ul>
- * <li>Bridge between Dropwizard and Jersey for HMAC authentication</li>
- * <li>Provides additional {@link org.growersnation.site.model.security.Authority} information</li>
+ * <li>Bridge between Dropwizard and Jersey for OpenID authentication</li>
  * </ul>
  *
  * @since 0.0.1
