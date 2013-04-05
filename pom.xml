@@ -102,16 +102,16 @@
     </dependency>
 
     <!-- eXistDB driver for XML datasets -->
-    <dependency>
-      <groupId>org.exist</groupId>
-      <artifactId>exist</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exist</groupId>
-      <artifactId>exist-optional</artifactId>
-      <version>2.0.0</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.exist</groupId>-->
+      <!--<artifactId>exist</artifactId>-->
+      <!--<version>2.0.0</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.exist</groupId>-->
+      <!--<artifactId>exist-optional</artifactId>-->
+      <!--<version>2.0.0</version>-->
+    <!--</dependency>-->
 
     <!-- MongoDB for JSON datasets -->
     <dependency>

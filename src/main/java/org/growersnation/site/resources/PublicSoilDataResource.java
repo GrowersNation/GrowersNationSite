@@ -3,6 +3,7 @@ package org.growersnation.site.resources;
 import com.google.common.base.Splitter;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
+import org.bson.types.ObjectId;
 import org.growersnation.site.dao.soil.http.PHBulkDensityDao;
 import org.growersnation.site.dao.soil.http.SoilTextureDao;
 import org.growersnation.site.dao.soil.http.TopsoilCarbonDao;
@@ -83,7 +84,7 @@ public class PublicSoilDataResource extends BaseResource {
     List<TopsoilNutrientsFields> topsoilNutrientsFieldsList = topsoilNutrientsDao.getTopsoilNutrientsData(lat, lng);
 
     //
-    SoilData soilData = new SoilData();
+    SoilData soilData = new SoilData(ObjectId.get().toString());
     soilData.setTopsoilCarbonFields(topsoilCarbonFieldsList);
     soilData.setPhBulkDensityFields(phBulkDensityFieldsList);
     soilData.setSoilTextureFields(soilTextureFieldsList);

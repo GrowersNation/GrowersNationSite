@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import org.growersnation.site.auth.openid.DiscoveryInformationMemento;
+import org.growersnation.site.repository.Persistable;
 import org.growersnation.site.utils.ObjectUtils;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
@@ -19,7 +20,7 @@ import java.util.UUID;
  * </ul>
  * </p>
  */
-public class User {
+public class User implements Persistable {
 
   /**
    * Unique identifier for this entity
