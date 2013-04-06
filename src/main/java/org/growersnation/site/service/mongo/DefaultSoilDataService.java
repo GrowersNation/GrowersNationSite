@@ -10,7 +10,7 @@ import org.growersnation.site.service.SoilDataService;
  *
  * @since 0.0.1
  */
-public class DefaultSoilDataService implements SoilDataService {
+public class DefaultSoilDataService implements SoilDataService<String> {
 
   private final SoilDataRepository soilDataRepository;
 
@@ -20,7 +20,8 @@ public class DefaultSoilDataService implements SoilDataService {
   }
 
   @Override
-  public void createSoilData(SoilData soilData) {
-    soilDataRepository.create(soilData);
+  public String save(SoilData soilData) {
+    return soilDataRepository.save(soilData);
   }
+
 }

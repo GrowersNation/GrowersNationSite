@@ -17,7 +17,7 @@ public class TopsoilNutrientsDaoTest {
   @Test
   public void testJAXB() {
 
-    InputStream is = TopsoilNutrientsDaoTest.class.getResourceAsStream("/soil/nutrients/test-nerc-topsoil-nutrients-1.xml");
+    InputStream is = TopsoilNutrientsDaoTest.class.getResourceAsStream("/fixtures/soil/nutrients/test-nerc-topsoil-nutrients-1.xml");
     FeatureInfoResponse fir = JAXB.unmarshal(is, FeatureInfoResponse.class);
 
     PHBulkDensityFields fields = fir.getFields().get(0);

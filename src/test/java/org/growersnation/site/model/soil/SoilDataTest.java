@@ -1,6 +1,7 @@
-package org.growersnation.site.dao.soil;
+package org.growersnation.site.model.soil;
 
-import org.growersnation.site.model.soil.SoilData;
+import com.yammer.dropwizard.testing.FixtureHelpers;
+import com.yammer.dropwizard.testing.JsonHelpers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,20 +29,36 @@ public class SoilDataTest {
   @Test
   public void serializesToJSON() throws Exception {
 
-    // Arrange
-    final SoilData testObject = SoilDataFaker.createSoilDataWithId("abcd-1234");
+        // Arrange
+    final SoilData testObject = JsonHelpers.fromJson(
+      FixtureHelpers.fixture("fixtures/soil/soildata/test-soildata-all-1.json"),
+      SoilData.class);
 
     assertThat(
       // Act
       asJson(testObject))
       // Assert
-      .isEqualTo(jsonFixture("fixtures/issues/issue-simple.json"));
+      .isEqualTo(jsonFixture("fixtures/soil/soildata/test-soildata-all-1.json"));
+
+    assertThat(testObject.getPhBulkDensityFields().size()).isEqualTo(1);
+//
+//
+//
+//
+//    // Arrange
+//    final SoilData testObject = SoilDataFaker.createValidSoilData();
+//
+//    assertThat(
+//      // Act
+//      asJson(testObject))
+//      // Assert
+//      .isEqualTo(jsonFixture("fixtures/soil/soildata/test-soildata-all-1.json"));
   }
 
   @Test
   public void validateSoilData_nullId() {
     // Arrange
-    SoilData issue = SoilDataFaker.createSoilDataWithId(null);
+    SoilData issue = SoilDataFaker.createValidSoilData();
 
     // Act
     Set<ConstraintViolation<SoilData>> constraintViolations = validator.validate(issue);
@@ -50,16 +67,4 @@ public class SoilDataTest {
     assertThat(constraintViolations.size()).isEqualTo(0);
   }
 
-  @Test
-  public void validateSoilData_nullTitle() {
-    // Arrange
-    SoilData issue = SoilDataFaker.createSoilDataWithTitle(null);
-
-    // Act
-    Set<ConstraintViolation<SoilData>> constraintViolations = validator.validate(issue);
-
-    // Assert
-    assertThat(constraintViolations.size()).isEqualTo(1);
-    assertThat(constraintViolations.iterator().next().getMessage()).isNotNull();
-  }
 }

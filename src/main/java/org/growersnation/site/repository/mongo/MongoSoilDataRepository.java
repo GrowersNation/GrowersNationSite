@@ -11,7 +11,7 @@ import org.mongojack.JacksonDBCollection;
  *
  * @since 0.0.1
  */
-public class MongoSoilDataRepository extends BaseMongoRepository<SoilData> implements SoilDataRepository {
+public class MongoSoilDataRepository extends BaseMongoRepository<SoilData, String> implements SoilDataRepository {
 
   @Inject
   public MongoSoilDataRepository(DB mongoDb) {

@@ -1,17 +1,35 @@
 package org.growersnation.site.repository.mem;
 
 import com.google.common.collect.Lists;
+import org.bson.types.ObjectId;
 import org.growersnation.site.repository.EntityRepository;
 import org.growersnation.site.repository.Persistable;
 
 import java.util.List;
 
-public class InMemoryEntityRepository<T extends Persistable> implements EntityRepository<T> {
+public class InMemoryEntityRepository<T extends Persistable<String>> implements EntityRepository<T, String> {
 
   /**
    * Maintain a simple mutable list
    */
   private final List<T> internalEntities = Lists.newArrayList();
+
+  @Override
+  public String save(T entity) {
+    synchronized (internalEntities) {
+      int index = internalEntities.indexOf(entity);
+      if (index == -1) {
+        if (entity.getId() == null) {
+          entity.setId(ObjectId.get().toString());
+        }
+        internalEntities.add(entity);
+      } else {
+        internalEntities.remove(index);
+        internalEntities.add(index, entity);
+      }
+      return entity.getId();
+    }
+  }
 
   @Override
   public String create(T entity) {

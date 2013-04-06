@@ -5,9 +5,9 @@ import com.google.inject.Inject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
+import org.growersnation.site.model.security.User;
+import org.growersnation.site.service.UserReadService;
 import org.mongojack.JacksonDBCollection;
-import uk.co.froot.coinapull.model.security.User;
-import uk.co.froot.coinapull.service.UserReadService;
 
 import java.util.List;
 import java.util.UUID;

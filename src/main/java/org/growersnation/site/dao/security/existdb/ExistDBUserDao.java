@@ -1,6 +1,5 @@
 package org.growersnation.site.dao.security.existdb;
 
-import org.exist.xmldb.EXistResource;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
@@ -10,7 +9,7 @@ import org.xmldb.api.modules.XMLResource;
 import javax.xml.transform.OutputKeys;
 
 /**
- * <p>DAO to provide the following to {@link User}:</p>
+ * <p>DAO to provide the following to {@link org.growersnation.site.model.security.User}:</p>
  * <ul>
  * <li>Access to </li>
  * </ul>
@@ -55,7 +54,7 @@ public class ExistDBUserDao {
       //dont forget to clean up!
 
       if(res != null) {
-        try { ((EXistResource)res).freeResources(); } catch(XMLDBException xe) {xe.printStackTrace();}
+        //try { ((EXistResource)res).freeResources(); } catch(XMLDBException xe) {xe.printStackTrace();}
       }
 
       if(col != null) {

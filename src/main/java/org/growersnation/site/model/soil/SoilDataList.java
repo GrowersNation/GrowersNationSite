@@ -18,11 +18,9 @@ import java.util.List;
  */
 public class SoilDataList {
 
-  @JsonProperty
   @NotNull
   private List<SoilData> soilData;
 
-  @JsonProperty
   @NotNull
   private PaginationData paginationData;
 

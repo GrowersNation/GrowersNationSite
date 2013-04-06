@@ -3,8 +3,12 @@ package org.growersnation.site.repository.mongo;
 
 import com.google.common.collect.Lists;
 import com.mongodb.DB;
+import org.growersnation.site.repository.EntityRepository;
+import org.growersnation.site.repository.Persistable;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -14,15 +18,22 @@ import java.util.List;
  * <li>Provision of common methods</li>
  * </ul>
  *
+ * @param <T> is the DTO type
+ * @param <K> is the key type for the DTO
  * @since 0.0.1
  */
-public abstract class BaseMongoRepository<T> {
+public abstract class BaseMongoRepository<T extends Persistable<K>, K> implements EntityRepository<T, K> {
 
-  protected final JacksonDBCollection<T, String> entitiesCollection;
+  /**
+   * Provides logging for this class
+   */
+  private Logger log = LoggerFactory.getLogger(BaseMongoRepository.class);
+
+  protected final JacksonDBCollection<T, K> entitiesCollection;
 
   private final DB mongoDb;
 
-  public BaseMongoRepository(DB mongoDb, JacksonDBCollection<T, String> entitiesCollection) {
+  public BaseMongoRepository(DB mongoDb, JacksonDBCollection<T, K> entitiesCollection) {
     this.mongoDb = mongoDb;
     this.entitiesCollection = entitiesCollection;
   }
@@ -31,27 +42,40 @@ public abstract class BaseMongoRepository<T> {
     return mongoDb;
   }
 
-  public String create(T entity) {
-    WriteResult<T, String> writeResult = entitiesCollection.insert(entity);
-    return writeResult.getSavedId();
+  public K save(T entity) {
+    WriteResult<T, K> writeResult = entitiesCollection.save(entity);
+    if (writeResult.getDbObjects().length != 0) {
+      // Had an insert so we can safely reference the ID
+      entity.setId(writeResult.getSavedId());
+      return writeResult.getSavedId();
+    }
+    // Return the original ID (no change)
+    return entity.getId();
   }
 
-  public List<String> createAll(List<T> entities) {
-    WriteResult<T, String> writeResult = entitiesCollection.insert(entities);
-    return writeResult.getSavedIds();
+
+  public K create(T entity) {
+    return entitiesCollection.insert(entity).getSavedId();
   }
 
-  public String upsert(T entity) {
-    // TODO This needs checking
-    WriteResult<T, String> writeResult = entitiesCollection.update(entity, entity, true, false);
-    return null;
-//    return writeResult.getSavedId();
+  public List<K> createAll(List<T> entities) {
+    return entitiesCollection.insert(entities).getSavedIds();
   }
 
-  public List<String> upsertAll(List<T> entities) {
+  public K upsert(T entity) {
+    WriteResult<T, K> writeResult = entitiesCollection.update(entity, entity, true, false);
+    if (writeResult.getDbObjects().length != 0) {
+      // Had an insert so we can safely reference the ID
+      return writeResult.getSavedId();
+    }
+    // Return the original ID (no change)
+    return entity.getId();
+  }
+
+  public List<K> upsertAll(List<T> entities) {
 
     // TODO Need to use updateMulti() and construct a suitable query
-    List<String> ids = Lists.newArrayList();
+    List<K> ids = Lists.newArrayList();
 
     for (T entity : entities) {
       ids.add(upsert(entity));

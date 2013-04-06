@@ -3,6 +3,7 @@ package org.growersnation.site.dao.security.mem;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import org.bson.types.ObjectId;
 import org.growersnation.site.dao.security.UserDao;
 import org.growersnation.site.model.PaginationData;
 import org.growersnation.site.model.security.User;
@@ -115,11 +116,10 @@ public class InMemoryUserDao implements UserDao {
       Preconditions.checkNotNull(user);
       int index = users.indexOf(user);
       if (index == -1) {
-        user.setId(users.size() + 1L);
+        user.setId(ObjectId.get().toString());
         users.add(user);
 
       } else {
-        user.setId(users.size() + 1L);
         users.remove(index);
         users.add(user);
       }

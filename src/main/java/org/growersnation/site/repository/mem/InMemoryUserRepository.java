@@ -1,8 +1,8 @@
 package org.growersnation.site.repository.mem;
 
 import com.google.common.base.Optional;
-import uk.co.froot.coinapull.model.security.User;
-import uk.co.froot.coinapull.repository.UserRepository;
+import org.growersnation.site.model.security.User;
+import org.growersnation.site.repository.UserRepository;
 
 import java.util.UUID;
 

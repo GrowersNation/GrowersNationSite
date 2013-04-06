@@ -15,7 +15,7 @@ public class TemperatureLocationDaoTest {
   @Test
   public void testJAXB() {
 
-    InputStream is = TemperatureLocationDaoTest.class.getResourceAsStream("/weather/test-temperature-1.xml");
+    InputStream is = TemperatureLocationDaoTest.class.getResourceAsStream("/fixtures/weather/test-temperature-1.xml");
     TemperatureLocationList tll = JAXB.unmarshal(is, TemperatureLocationList.class);
 
     TemperatureLocation tl = tll.getLocations().get(0);

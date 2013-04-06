@@ -18,6 +18,7 @@ import org.growersnation.site.service.SoilDataReadService;
 import org.growersnation.site.service.SoilDataService;
 import org.growersnation.site.service.UserReadService;
 import org.growersnation.site.service.UserService;
+import org.growersnation.site.service.mongo.DefaultSoilDataService;
 import org.growersnation.site.service.mongo.DefaultUserService;
 import org.growersnation.site.service.mongo.MongoSoilDataReadService;
 import org.growersnation.site.service.mongo.MongoUserReadService;

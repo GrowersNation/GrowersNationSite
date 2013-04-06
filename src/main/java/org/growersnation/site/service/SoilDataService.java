@@ -9,15 +9,19 @@ import javax.validation.Valid;
  * <ul>
  * <li>Business logic relating to {@link SoilData}s</li>
  * </ul>
- *
+ * <p/>
  * Note: This service does not provide read access to soil data. Please see {@link SoilDataReadService}.
+ * <p/>
+ * @param <K> is the key type for the DTO
  *
  * @since 0.0.1
  */
-public interface SoilDataService {
+public interface SoilDataService<K> {
 
   /**
-   * @param soilData The soil data to create
+   * @param soilData The soil data to either create or update depending on ID matching
+   * @return The optional ID (present if a create operation was performed)
    */
-  void createSoilData(@Valid SoilData soilData);
+  K save(@Valid SoilData soilData);
+
 }

@@ -153,6 +153,12 @@
       <artifactId>javafaker</artifactId>
       <version>0.2</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Embedded MongoDB for functional testing -->

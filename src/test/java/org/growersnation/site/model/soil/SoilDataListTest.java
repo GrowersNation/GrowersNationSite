@@ -1,8 +1,7 @@
-package org.growersnation.site.dao.soil;
+package org.growersnation.site.model.soil;
 
 import com.yammer.dropwizard.testing.FixtureHelpers;
 import com.yammer.dropwizard.testing.JsonHelpers;
-import org.growersnation.site.model.soil.SoilDataList;
 import org.junit.Test;
 
 import static com.yammer.dropwizard.testing.JsonHelpers.asJson;
@@ -16,14 +15,14 @@ public class SoilDataListTest {
 
     // Arrange
     final SoilDataList testObject = JsonHelpers.fromJson(
-      FixtureHelpers.fixture("fixtures/issues/issue-list-simple.json"),
+      FixtureHelpers.fixture("fixtures/soil/soildata/test-soildatalist-1.json"),
       SoilDataList.class);
 
     assertThat(
       // Act
       asJson(testObject))
       // Assert
-      .isEqualTo(jsonFixture("fixtures/issues/issue-list-simple.json"));
+      .isEqualTo(jsonFixture("fixtures/soil/soildata/test-soildatalist-1.json"));
 
     assertThat(testObject.getPaginationData().getPageNumber()).isEqualTo(0);
     assertThat(testObject.getPaginationData().getPageSize()).isEqualTo(10);

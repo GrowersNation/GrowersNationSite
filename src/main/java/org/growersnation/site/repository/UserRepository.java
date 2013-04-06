@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * <p>Repository to provide storage and retrieval of SoilData aggregates to the application</p>
  */
-public interface UserRepository extends EntityRepository<User> {
+public interface UserRepository extends EntityRepository<User, String> {
 
   /**
    * @param sessionToken The session token

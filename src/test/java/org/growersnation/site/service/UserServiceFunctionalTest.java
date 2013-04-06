@@ -6,12 +6,12 @@ import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
+import org.growersnation.site.model.security.User;
+import org.growersnation.site.model.security.UserFaker;
+import org.growersnation.site.repository.mongo.MongoUserRepository;
+import org.growersnation.site.service.mongo.DefaultUserService;
+import org.growersnation.site.service.mongo.MongoUserReadService;
 import org.junit.*;
-import uk.co.froot.coinapull.model.security.User;
-import uk.co.froot.coinapull.model.security.UserFaker;
-import uk.co.froot.coinapull.repository.mongo.MongoUserRepository;
-import uk.co.froot.coinapull.service.mongo.DefaultUserService;
-import uk.co.froot.coinapull.service.mongo.MongoUserReadService;
 
 import java.io.IOException;
 import java.util.Set;

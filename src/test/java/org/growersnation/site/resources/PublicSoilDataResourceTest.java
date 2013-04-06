@@ -1,5 +1,6 @@
 package org.growersnation.site.resources;
 
+import com.google.common.base.Preconditions;
 import com.yammer.dropwizard.testing.FixtureHelpers;
 import com.yammer.dropwizard.testing.JsonHelpers;
 import org.growersnation.site.dao.soil.http.PHBulkDensityDao;
@@ -30,15 +31,20 @@ public class PublicSoilDataResourceTest extends BaseResourceTest {
   @Before
   public void setUp() throws IOException {
 
-    expectedSoilData = JsonHelpers.fromJson(FixtureHelpers.fixture("soil/soildata/test-soildata-all-1.json"), SoilData.class);
+    expectedSoilData = JsonHelpers.fromJson(FixtureHelpers.fixture("fixtures/soil/soildata/test-soildata-all-1.json"), SoilData.class);
+
+    Preconditions.checkNotNull(expectedSoilData);
 
     // Configure expectations
     when(phBulkDensityDao.getPHBulkDensityData(51.65,0.1))
       .thenReturn(expectedSoilData.getPhBulkDensityFields());
+
     when(soilTextureDao.getSoilTextureData(51.65, 0.1))
       .thenReturn(expectedSoilData.getSoilTextureFields());
+
     when(topsoilCarbonDao.getTopsoilCarbonData(51.65, 0.1))
       .thenReturn(expectedSoilData.getTopsoilCarbonFields());
+
     when(topsoilNutrientsDao.getTopsoilNutrientsData(51.65, 0.1))
       .thenReturn(expectedSoilData.getTopsoilNutrientsFields());
 

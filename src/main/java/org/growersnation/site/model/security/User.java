@@ -7,8 +7,6 @@ import com.google.common.collect.Sets;
 import org.growersnation.site.auth.openid.DiscoveryInformationMemento;
 import org.growersnation.site.repository.Persistable;
 import org.growersnation.site.utils.ObjectUtils;
-import org.mongojack.Id;
-import org.mongojack.ObjectId;
 
 import java.util.Set;
 import java.util.UUID;
@@ -20,7 +18,7 @@ import java.util.UUID;
  * </ul>
  * </p>
  */
-public class User implements Persistable {
+public class User implements Persistable<String> {
 
   /**
    * Unique identifier for this entity
@@ -100,13 +98,7 @@ public class User implements Persistable {
   private Set<Authority> authorities=Sets.newLinkedHashSet();
 
   @JsonCreator
-  public User(
-    @Id
-    @ObjectId
-    @JsonProperty("id") String id,
-    @JsonProperty("sessionToken") UUID sessionToken
-  ) {
-    this.id = id;
+  public User(@JsonProperty("sessionToken") UUID sessionToken) {
     this.sessionToken = sessionToken;
   }
 

@@ -167,7 +167,7 @@ public class PublicOpenIDResource extends BaseResource {
 
       // Create a temporary User to preserve state between requests without
       // using a session (we could be in a cluster)
-      User tempUser = new User(null, sessionToken);
+      User tempUser = new User(sessionToken);
       tempUser.setOpenIDDiscoveryInformationMemento(memento);
       tempUser.setSessionToken(sessionToken);
       userDao.saveOrUpdate(tempUser);
@@ -290,7 +290,7 @@ public class PublicOpenIDResource extends BaseResource {
         // and replace it with a potentially new one
         userDao.delete(tempUser);
 
-        tempUser = new User(null, UUID.randomUUID());
+        tempUser = new User(UUID.randomUUID());
         tempUser.setOpenIDIdentifier(verified.get().getIdentifier());
 
         // Provide a basic authority in light of successful authentication
