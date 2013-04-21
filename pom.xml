@@ -97,8 +97,14 @@
     <!-- OpenID heavy lifting -->
     <dependency>
       <groupId>org.openid4java</groupId>
-      <artifactId>openid4java-consumer</artifactId>
-      <version>0.9.6</version>
+      <artifactId>openid4java</artifactId>
+      <version>0.9.7</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>guice</artifactId>
+          <groupId>com.google.inject</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- eXistDB driver for XML datasets -->
