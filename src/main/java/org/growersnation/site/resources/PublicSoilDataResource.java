@@ -100,11 +100,11 @@ public class PublicSoilDataResource extends BaseResource {
   @POST
   public Response postSoilData(SoilData soilData) {
 
-    log.info("Soil data = ",soilData.toString());
+    //log.info("Soil data = ",soilData.toString());
 
     URI location = UriBuilder
       .fromResource(PublicSoilDataResource.class)
-      .queryParam("id",12345)
+      .queryParam("id", soilData.getId())
       .build()
       ;
 
