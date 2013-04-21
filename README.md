@@ -7,6 +7,7 @@ Resources supported are:
 * Provision of soil data from BGS sources
 * Acceptance of user-specific soil data
 * User account creation and maintenance
+* Input of sensor data as JSON from client applications
 
 ## Technology
 
