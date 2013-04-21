@@ -10,6 +10,8 @@ import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.MongoURI;
 import org.growersnation.site.SiteConfiguration;
+import org.growersnation.site.dao.security.UserDao;
+import org.growersnation.site.dao.security.mem.InMemoryUserDao;
 import org.growersnation.site.repository.SoilDataRepository;
 import org.growersnation.site.repository.UserRepository;
 import org.growersnation.site.repository.mongo.MongoSoilDataRepository;
@@ -61,6 +63,7 @@ public class SiteServiceModule extends AbstractModule {
   protected void configure() {
 
     // User support
+    bind(UserDao.class).to(InMemoryUserDao.class).asEagerSingleton();
     bind(UserReadService.class).to(MongoUserReadService.class).asEagerSingleton();
     bind(UserService.class).to(DefaultUserService.class).asEagerSingleton();
     bind(UserRepository.class).to(MongoUserRepository.class).asEagerSingleton();
@@ -98,8 +101,6 @@ public class SiteServiceModule extends AbstractModule {
     if (mongoUri.getUsername() != null && mongoUri.getPassword() != null) {
       db.authenticate(mongoUri.getUsername(), mongoUri.getPassword());
     }
-
-    db.getCollection("users").drop();
 
     return db;
 
