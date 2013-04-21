@@ -28,8 +28,9 @@ public class PublicSensorDataResource extends BaseResource {
 
   /**
    * Provide soil data based on a Lat/Lng combination
+   *
    * @param rawLocation The location expressed as lat,long
-   * @param rawRadius The radius in 0.02
+   * @param rawRadius   The radius in 0.02
    *
    * @return A localised view containing HTML
    */
@@ -39,7 +40,7 @@ public class PublicSensorDataResource extends BaseResource {
   public Response getSensorData(
     @QueryParam("location") String rawLocation,
     @QueryParam("radius") String rawRadius
-    ) {
+  ) {
 
     return Response.ok().build();
 
@@ -57,10 +58,17 @@ public class PublicSensorDataResource extends BaseResource {
     URI location = UriBuilder
       .fromResource(PublicSensorDataResource.class)
       .queryParam("id", sensorData.getId())
-      .build()
-      ;
+      .build();
 
-    return Response.created(location).entity("Success! Soil pH was: "+sensorData.getpH()).build();
+    StringBuilder sb = new StringBuilder("Success! Information:")
+      .append("\\nph: ")
+      .append(sensorData.getpH())
+      .append("\\ntemperature: ")
+      .append(sensorData.getTemperature())
+      .append("\\nmoisture: ")
+      .append(sensorData.getMoisture());
+
+    return Response.created(location).entity(sb.toString()).build();
 
   }
 
