@@ -6,7 +6,7 @@ import java.util.List;
  * <p>Repository to provide storage and retrieval of Entity aggregates to the application</p>
  *
  * @param <T> is the DTO type
- * @param <K> is the key type for the DTO
+ * @param <K> is the key type for the DTO (usually String)
  */
 public interface EntityRepository<T extends Persistable<K>, K> {
 

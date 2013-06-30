@@ -7,11 +7,11 @@ import org.growersnation.site.infrastructure.persistence.dao.soil.http.PHBulkDen
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.SoilTextureDao;
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.TopsoilCarbonDao;
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.TopsoilNutrientsDao;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.SoilData;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.carbon.TopsoilCarbonFields;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.nutrients.TopsoilNutrientsFields;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.ph.PHBulkDensityFields;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.texture.SoilTextureFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.domain.thirdparty.bgs.soil.carbon.TopsoilCarbonFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.nutrients.TopsoilNutrientsFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.ph.PHBulkDensityFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.texture.SoilTextureFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

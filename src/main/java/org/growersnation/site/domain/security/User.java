@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
-import org.growersnation.site.domain.repositories.Persistable;
+import org.growersnation.site.domain.BaseEntity;
 import org.growersnation.site.infrastructure.utils.ObjectUtils;
 import org.growersnation.site.interfaces.rest.auth.openid.DiscoveryInformationMemento;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
  * </ul>
  * </p>
  */
-public class User implements Persistable<String> {
+public class User extends BaseEntity {
 
   /**
    * Unique identifier for this entity

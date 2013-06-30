@@ -2,7 +2,7 @@ package org.growersnation.site.interfaces.rest.api.soil;
 
 import com.yammer.dropwizard.testing.FixtureHelpers;
 import com.yammer.dropwizard.testing.JsonHelpers;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
 import org.junit.Before;
 import org.junit.Test;
 

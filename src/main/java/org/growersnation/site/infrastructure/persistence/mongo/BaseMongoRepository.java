@@ -1,10 +1,13 @@
 package org.growersnation.site.infrastructure.persistence.mongo;
 
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.mongodb.DB;
 import org.growersnation.site.domain.repositories.EntityRepository;
 import org.growersnation.site.domain.repositories.Persistable;
+import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
 import org.slf4j.Logger;
@@ -20,6 +23,7 @@ import java.util.List;
  *
  * @param <T> is the DTO type
  * @param <K> is the key type for the DTO
+ *
  * @since 0.0.1
  */
 public abstract class BaseMongoRepository<T extends Persistable<K>, K> implements EntityRepository<T, K> {
@@ -85,6 +89,23 @@ public abstract class BaseMongoRepository<T extends Persistable<K>, K> implement
 
   public void hardDelete(T entity) {
     entitiesCollection.remove(entity);
+  }
+
+  public Optional<T> findOne(String fieldName, Object value) {
+
+    Preconditions.checkNotNull(fieldName, "'" + fieldName + "' must be present");
+
+    return Optional.fromNullable(entitiesCollection.findOne(DBQuery.is(fieldName, value)));
+
+  }
+
+  public Optional<T> findOne(String fieldName1, Object value1, String fieldName2, Object value2) {
+
+    Preconditions.checkNotNull(fieldName1, "'" + fieldName1 + "' must be present");
+    Preconditions.checkNotNull(fieldName2, "'" + fieldName2 + "' must be present");
+
+    return Optional.fromNullable(entitiesCollection.findOne(DBQuery.is(fieldName1, value1).and(DBQuery.is(fieldName2, value2))));
+
   }
 
 }

@@ -1,8 +1,8 @@
 package org.growersnation.site.infrastructure.persistence.dao.soil.http;
 
 
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.texture.FeatureInfoResponse;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.texture.SoilTextureFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.texture.FeatureInfoResponse;
+import org.growersnation.site.domain.thirdparty.bgs.soil.texture.SoilTextureFields;
 import org.junit.Ignore;
 import org.junit.Test;
 

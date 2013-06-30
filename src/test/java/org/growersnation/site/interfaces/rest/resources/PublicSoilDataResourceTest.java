@@ -7,7 +7,7 @@ import org.growersnation.site.infrastructure.persistence.dao.soil.http.PHBulkDen
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.SoilTextureDao;
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.TopsoilCarbonDao;
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.TopsoilNutrientsDao;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
 import org.growersnation.site.test.BaseResourceTest;
 import org.junit.Before;
 import org.junit.Test;

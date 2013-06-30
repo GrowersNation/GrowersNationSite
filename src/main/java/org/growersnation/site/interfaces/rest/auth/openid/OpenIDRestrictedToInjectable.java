@@ -8,7 +8,7 @@ import com.sun.jersey.server.impl.inject.AbstractHttpContextInjectable;
 import com.yammer.dropwizard.auth.AuthenticationException;
 import org.growersnation.site.SiteConfiguration;
 import org.growersnation.site.domain.security.Authority;
-import org.growersnation.site.interfaces.rest.api.security.UserDto;
+import org.growersnation.site.domain.security.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +29,7 @@ import java.util.UUID;
  *
  * @since 0.0.1
  */
-class OpenIDRestrictedToInjectable extends AbstractHttpContextInjectable<UserDto> {
+class OpenIDRestrictedToInjectable extends AbstractHttpContextInjectable<User> {
 
   private static final Logger log = LoggerFactory.getLogger(OpenIDRestrictedToInjectable.class);
 
@@ -56,7 +56,7 @@ class OpenIDRestrictedToInjectable extends AbstractHttpContextInjectable<UserDto
   }
 
   @Override
-  public UserDto getValue(HttpContext httpContext) {
+  public User getValue(HttpContext httpContext) {
 
     try {
 
@@ -72,7 +72,7 @@ class OpenIDRestrictedToInjectable extends AbstractHttpContextInjectable<UserDto
 
         final OpenIDCredentials credentials = new OpenIDCredentials(sessionToken, requiredAuthorities);
 
-        final Optional<UserDto> result = authenticator.authenticate(credentials);
+        final Optional<User> result = authenticator.authenticate(credentials);
         if (result.isPresent()) {
           return result.get();
         }

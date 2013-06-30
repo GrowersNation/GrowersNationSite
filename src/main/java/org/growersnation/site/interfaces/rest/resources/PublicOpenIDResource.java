@@ -4,9 +4,9 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.yammer.dropwizard.views.View;
 import org.growersnation.site.SiteConfiguration;
+import org.growersnation.site.domain.repositories.UserRepository;
 import org.growersnation.site.domain.security.Authority;
-import org.growersnation.site.infrastructure.persistence.dao.security.UserDao;
-import org.growersnation.site.interfaces.rest.api.security.UserDto;
+import org.growersnation.site.domain.security.User;
 import org.growersnation.site.interfaces.rest.auth.openid.DiscoveryInformationMemento;
 import org.growersnation.site.interfaces.rest.views.BaseModel;
 import org.growersnation.site.interfaces.rest.views.PrivateFreemarkerView;
@@ -56,13 +56,13 @@ public class PublicOpenIDResource extends BaseResource {
 
   public final ConsumerManager manager;
 
-  private final UserDao userDao;
+  private final UserRepository userRepository;
 
   /**
-   * @param userDao The User DAO to allow login/logout operations
+   * @param userRepository The User DAO to allow login/logout operations
    */
   @Inject
-  public PublicOpenIDResource(UserDao userDao) {
+  public PublicOpenIDResource(UserRepository userRepository) {
     // Proxy configuration must come before ConsumerManager construction
 //    ProxyProperties proxyProps = new ProxyProperties();
 //    proxyProps.setProxyHostName("some-proxy");
@@ -70,7 +70,7 @@ public class PublicOpenIDResource extends BaseResource {
 //    HttpClientFactory.setProxyProperties(proxyProps);
 
     this.manager = new ConsumerManager();
-    this.userDao = userDao;
+    this.userRepository = userRepository;
 
   }
 
@@ -92,11 +92,11 @@ public class PublicOpenIDResource extends BaseResource {
   public Response logout() {
 
     BaseModel model = modelBuilder.newBaseModel(httpHeaders);
-    UserDto user = model.getUser();
+    User user = model.getUser();
     if (user != null) {
       // Invalidate the session token
       user.setSessionToken(null);
-      userDao.saveOrUpdate(user);
+      userRepository.saveOrUpdate(user);
       model.setUser(null);
     }
 
@@ -105,7 +105,7 @@ public class PublicOpenIDResource extends BaseResource {
     // Remove the session token which will have the effect of logout
     return Response
       .ok()
-      .cookie(replaceSessionTokenCookie(Optional.<UserDto>absent()))
+      .cookie(replaceSessionTokenCookie(Optional.<User>absent()))
       .entity(view)
       .build();
 
@@ -167,10 +167,10 @@ public class PublicOpenIDResource extends BaseResource {
 
       // Create a temporary User to preserve state between requests without
       // using a session (we could be in a cluster)
-      UserDto tempUser = new UserDto(sessionToken);
+      User tempUser = new User(sessionToken);
       tempUser.setOpenIDDiscoveryInformationMemento(memento);
       tempUser.setSessionToken(sessionToken);
-      userDao.saveOrUpdate(tempUser);
+      userRepository.saveOrUpdate(tempUser);
 
       // Build the AuthRequest message to be sent to the OpenID provider
       AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
@@ -224,14 +224,14 @@ public class PublicOpenIDResource extends BaseResource {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    Optional<UserDto> tempUserOptional = userDao.getBySessionToken(UUID.fromString(rawToken));
+    Optional<User> tempUserOptional = userRepository.getBySessionToken(UUID.fromString(rawToken));
     if (!tempUserOptional.isPresent()) {
       log.debug("Authentication failed due to no temp User matching session token {}", rawToken);
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
     // Must have a temporary User to be here
-    UserDto tempUser = tempUserOptional.get();
+    User tempUser = tempUserOptional.get();
 
     // Retrieve the discovery information
     final DiscoveryInformationMemento memento = tempUser.getOpenIDDiscoveryInformationMemento();
@@ -288,9 +288,9 @@ public class PublicOpenIDResource extends BaseResource {
 
         // We have successfully authenticated so remove the temp user
         // and replace it with a potentially new one
-        userDao.delete(tempUser);
+        userRepository.delete(tempUser);
 
-        tempUser = new UserDto(UUID.randomUUID());
+        tempUser = new User(UUID.randomUUID());
         tempUser.setOpenIDIdentifier(verified.get().getIdentifier());
 
         // Provide a basic authority in light of successful authentication
@@ -305,22 +305,24 @@ public class PublicOpenIDResource extends BaseResource {
         log.info("Extracted a temporary {}", tempUser);
 
         // Search for a pre-existing User matching the temp User
-        Optional<UserDto> userOptional = userDao.getByOpenIDIdentifier(tempUser.getOpenIDIdentifier());
-        UserDto user;
+        Optional<User> userOptional = userRepository.getByOpenIDIdentifier(tempUser.getOpenIDIdentifier());
+        User user;
         if (!userOptional.isPresent()) {
           // This is either a new registration or the OpenID identifier has changed
           if (tempUser.getEmailAddress() != null) {
-            userOptional = userDao.getByEmailAddress(tempUser.getEmailAddress());
+            userOptional = userRepository.getByEmailAddress(tempUser.getEmailAddress());
             if (!userOptional.isPresent()) {
               // This is a new User
               log.debug("Registering new {}", tempUser);
-              user = userDao.saveOrUpdate(tempUser);
+              String userId = userRepository.saveOrUpdate(tempUser);
+              userOptional = userRepository.getById(userId);
+              user = userOptional.get();
             } else {
               // The OpenID identifier has changed so update it
               log.debug("Updating OpenID identifier for {}", tempUser);
               user = userOptional.get();
               user.setOpenIDIdentifier(tempUser.getOpenIDIdentifier());
-              user = userDao.saveOrUpdate(user);
+              userRepository.saveOrUpdate(user);
             }
           } else {
             // No email address to use as backup
@@ -365,7 +367,7 @@ public class PublicOpenIDResource extends BaseResource {
    *
    * @return A cookie with a long term expiry date suitable for use as a session token for OpenID
    */
-  private NewCookie replaceSessionTokenCookie(Optional<UserDto> user) {
+  private NewCookie replaceSessionTokenCookie(Optional<User> user) {
 
     if (user.isPresent()) {
 

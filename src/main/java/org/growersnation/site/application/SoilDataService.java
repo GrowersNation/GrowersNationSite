@@ -1,6 +1,6 @@
 package org.growersnation.site.application;
 
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
 
 import javax.validation.Valid;
 

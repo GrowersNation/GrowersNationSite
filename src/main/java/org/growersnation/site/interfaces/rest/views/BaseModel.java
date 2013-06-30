@@ -1,6 +1,6 @@
 package org.growersnation.site.interfaces.rest.views;
 
-import org.growersnation.site.interfaces.rest.api.security.UserDto;
+import org.growersnation.site.domain.security.User;
 
 /**
  * <p>Base class to provide the following to views:</p>
@@ -13,13 +13,13 @@ import org.growersnation.site.interfaces.rest.api.security.UserDto;
  */
 public class BaseModel {
 
-  private UserDto user;
+  private User user;
 
-  public UserDto getUser() {
+  public User getUser() {
     return user;
   }
 
-  public void setUser(UserDto user) {
+  public void setUser(User user) {
     this.user = user;
   }
 }

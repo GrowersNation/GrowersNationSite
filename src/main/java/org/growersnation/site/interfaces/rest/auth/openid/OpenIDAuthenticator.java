@@ -4,8 +4,8 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.yammer.dropwizard.auth.AuthenticationException;
 import com.yammer.dropwizard.auth.Authenticator;
-import org.growersnation.site.infrastructure.persistence.dao.security.UserDao;
-import org.growersnation.site.interfaces.rest.api.security.UserDto;
+import org.growersnation.site.domain.repositories.UserRepository;
+import org.growersnation.site.domain.security.User;
 
 /**
  * <p>Authenticator to provide the following to application:</p>
@@ -15,21 +15,20 @@ import org.growersnation.site.interfaces.rest.api.security.UserDto;
  *
  * @since 0.0.1
  */
-public class OpenIDAuthenticator implements Authenticator<OpenIDCredentials, UserDto> {
+public class OpenIDAuthenticator implements Authenticator<OpenIDCredentials, User> {
 
-  private final UserDao userDao;
+  private final UserRepository userRepository;
 
   @Inject
-  public OpenIDAuthenticator(UserDao userDao) {
-    this.userDao = userDao;
+  public OpenIDAuthenticator(UserRepository userRepository) {
+    this.userRepository = userRepository;
   }
 
-
   @Override
-  public Optional<UserDto> authenticate(OpenIDCredentials credentials) throws AuthenticationException {
+  public Optional<User> authenticate(OpenIDCredentials credentials) throws AuthenticationException {
 
     // Get the User referred to by the API key
-    Optional<UserDto> user = userDao.getBySessionToken(credentials.getSessionToken());
+    Optional<User> user = userRepository.getBySessionToken(credentials.getSessionToken());
     if (!user.isPresent()) {
       return Optional.absent();
     }

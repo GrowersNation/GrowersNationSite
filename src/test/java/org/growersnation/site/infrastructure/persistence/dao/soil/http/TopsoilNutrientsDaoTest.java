@@ -1,7 +1,7 @@
 package org.growersnation.site.infrastructure.persistence.dao.soil.http;
 
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.nutrients.FeatureInfoResponse;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.nutrients.TopsoilNutrientsFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.nutrients.FeatureInfoResponse;
+import org.growersnation.site.domain.thirdparty.bgs.soil.nutrients.TopsoilNutrientsFields;
 import org.junit.Ignore;
 import org.junit.Test;
 

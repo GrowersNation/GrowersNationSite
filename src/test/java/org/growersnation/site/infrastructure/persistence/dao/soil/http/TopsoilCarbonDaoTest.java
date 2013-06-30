@@ -1,7 +1,7 @@
 package org.growersnation.site.infrastructure.persistence.dao.soil.http;
 
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.carbon.FeatureInfoResponse;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.carbon.TopsoilCarbonFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.carbon.FeatureInfoResponse;
+import org.growersnation.site.domain.thirdparty.bgs.soil.carbon.TopsoilCarbonFields;
 import org.junit.Ignore;
 import org.junit.Test;
 

@@ -3,11 +3,11 @@ package org.growersnation.site.interfaces.rest.api.soil;
 import com.github.javafaker.Faker;
 import com.google.common.collect.Lists;
 import org.bson.types.ObjectId;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.SoilData;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.carbon.TopsoilCarbonFields;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.nutrients.TopsoilNutrientsFields;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.ph.PHBulkDensityFields;
-import org.growersnation.site.infrastructure.thirdparty.bgs.soil.texture.SoilTextureFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.domain.thirdparty.bgs.soil.carbon.TopsoilCarbonFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.nutrients.TopsoilNutrientsFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.ph.PHBulkDensityFields;
+import org.growersnation.site.domain.thirdparty.bgs.soil.texture.SoilTextureFields;
 
 import java.util.List;
 

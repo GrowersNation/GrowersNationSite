@@ -4,8 +4,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import org.growersnation.site.SiteConfiguration;
-import org.growersnation.site.infrastructure.persistence.dao.security.UserDao;
-import org.growersnation.site.interfaces.rest.api.security.UserDto;
+import org.growersnation.site.domain.repositories.UserRepository;
+import org.growersnation.site.domain.security.User;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
@@ -21,12 +21,12 @@ import java.util.UUID;
  */
 public class ModelBuilder {
 
-  private final UserDao userDao;
+  private final UserRepository userRepository;
 
   @Inject
-  public ModelBuilder(UserDao userDao) {
-    Preconditions.checkNotNull(userDao);
-    this.userDao = userDao;
+  public ModelBuilder(UserRepository userRepository) {
+    Preconditions.checkNotNull(userRepository);
+    this.userRepository = userRepository;
   }
 
   private Optional<UUID> extractSessionToken(HttpHeaders httpHeaders) {
@@ -70,7 +70,7 @@ public class ModelBuilder {
     // Locate and populate the user by their session token (if present)
     Optional<UUID> sessionToken = extractSessionToken(httpHeaders);
     if (sessionToken.isPresent()) {
-      Optional<UserDto> user = userDao.getBySessionToken(sessionToken.get());
+      Optional<User> user = userRepository.getBySessionToken(sessionToken.get());
       if (user.isPresent()) {
         baseModel.setUser(user.get());
       }
