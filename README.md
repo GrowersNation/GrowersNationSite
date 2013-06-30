@@ -30,15 +30,29 @@ From the console you can do the following
     mvn clean install
     java -jar target/growers-nation-develop-SNAPSHOT.jar server gn.yml
 
-## Manual installation of eXistDB driver files
+# Installing MongoDB
 
-The eXistDB support requires that `exist.jar` and `exist-optional.jar` are installed as Maven artifacts before a 
-build can complete. Use the following commands from your eXistDB installation (usually `/opt/exist`):
+Follow the usual [MongoDB installation instructions](http://docs.mongodb.org/manual/installation/), such as
 
-    mvn install:install-file -Dfile=./exist.jar -DgroupId=org.exist -DartifactId=exist -Dversion=2.0.0 -Dpackaging=jar
-    mvn install:install-file -Dfile=./exist-optional.jar -DgroupId=org.exist -DartifactId=exist -Dversion=2.0.0 -Dpackaging=jar
+```
+$ brew update
+$ brew install mongo
+```
 
-That should be a one-off operation for each build machine.
+Start MongoDB as a background process with
+
+```
+$ mongod &
+```
+
+Then create the following collections through the Mongo CLI
+
+```
+$ mongo
+> use gn
+> db.createCollection("soil-data");
+> exit
+```
 
 ## Proxy settings
 
