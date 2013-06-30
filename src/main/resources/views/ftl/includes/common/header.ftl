@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.growersnation.site.views.PublicFreemarkerView" -->
+<#-- @ftlvariable name="" type="org.growersnation.site.interfaces.rest.views.PublicFreemarkerView" -->
 <!-- Add any common HTML here -->
 <!-- wrapper start -->
 <div id="wrapper">

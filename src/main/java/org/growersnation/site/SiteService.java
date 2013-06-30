@@ -7,7 +7,7 @@ import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.views.ViewBundle;
-import org.growersnation.site.guice.SiteServiceModule;
+import org.growersnation.site.infrastructure.guice.SiteServiceModule;
 
 /**
  * <p>Service to provide the following to application:</p>

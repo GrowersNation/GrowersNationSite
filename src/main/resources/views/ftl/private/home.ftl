@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.growersnation.site.views.PrivateFreemarkerView" -->
+<#-- @ftlvariable name="" type="org.growersnation.site.interfaces.rest.views.PrivateFreemarkerView" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -6,11 +6,11 @@ import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
-import org.growersnation.site.model.security.User;
-import org.growersnation.site.model.security.UserFaker;
-import org.growersnation.site.repository.mongo.MongoUserRepository;
-import org.growersnation.site.service.mongo.DefaultUserService;
-import org.growersnation.site.service.mongo.MongoUserReadService;
+import org.growersnation.site.application.UserReadService;
+import org.growersnation.site.application.UserService;
+import org.growersnation.site.application.mongo.DefaultUserService;
+import org.growersnation.site.application.mongo.MongoUserReadService;
+import org.growersnation.site.infrastructure.persistence.mongo.MongoUserRepository;
 import org.junit.*;
 
 import java.io.IOException;
@@ -64,8 +64,8 @@ public class UserServiceFunctionalTest {
   public void readUsers_oneValidUser() {
     // Setup
     long expectedUserCount = 1;
-    User user = UserFaker.createSessionUser();
-    userService.create(user);
+    //UserDto user = UserFaker.createSessionUser();
+    //userService.create(user);
 
     // Execute
     long userCount = userReadService.getUserCount();

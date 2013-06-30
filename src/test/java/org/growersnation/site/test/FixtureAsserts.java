@@ -8,8 +8,7 @@ import com.google.common.io.Resources;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * <p>Fixture assertions to provide the following to application:</p>
@@ -57,10 +56,9 @@ public class FixtureAsserts {
    */
   public static void assertStringMatchesJsonFixture(String reason, String representation, String fixtureClasspath) throws IOException {
 
-    assertEquals(reason,
-      jsonFixture(fixtureClasspath),
-      representation
-    );
+    assertThat(jsonFixture(fixtureClasspath))
+      .describedAs(reason)
+      .isEqualTo(representation);
   }
 
   /**
@@ -74,10 +72,9 @@ public class FixtureAsserts {
    */
   public static void assertStringMatchesStringFixture(String reason, String representation, String fixtureClasspath) throws IOException {
 
-    assertEquals(reason,
-      fixture(fixtureClasspath),
-      representation
-    );
+    assertThat(jsonFixture(fixtureClasspath))
+      .describedAs(reason)
+      .isEqualTo(representation);
   }
 
   /**
@@ -90,7 +87,7 @@ public class FixtureAsserts {
    * @throws java.io.IOException If something goes wrong
    */
   public static void assertRepresentationMatchesBinaryFixture(String reason, byte[] representation, String fixtureClasspath) throws IOException {
-    assertTrue(reason, Arrays.equals(representation, BinaryFixtureHelpers.fixture(fixtureClasspath)));
+    assertThat(Arrays.equals(representation, BinaryFixtureHelpers.fixture(fixtureClasspath))).describedAs(reason).isTrue();
   }
 
 }
