@@ -1,8 +1,10 @@
 package org.growersnation.site.infrastructure.persistence.dao.soil.http;
 
 
-import org.growersnation.site.domain.thirdparty.bgs.soil.texture.FeatureInfoResponse;
-import org.growersnation.site.domain.thirdparty.bgs.soil.texture.SoilTextureFields;
+import com.google.common.collect.Lists;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.FieldAccessor;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.texture.FeatureInfoResponse;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.texture.SoilTextureFields;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,7 +36,24 @@ public class SoilTextureDaoTest {
   @Ignore
   public void testLiveData() {
 
-    SoilTextureDao testObject = new SoilTextureDao();
+    SoilTextureDao testObject = new SoilTextureDao() {
+
+      private int callCount = 0;
+
+      @Override
+      protected <F> List<F> queryFeatureInfoFieldHttpSource(String url, Class<? extends FieldAccessor<F>> featureInfoResponse, Class<F> fieldType) {
+
+        if (callCount < 5) {
+          callCount++;
+          return Lists.newArrayList();
+        }
+
+        InputStream is = SoilTextureDaoTest.class.getResourceAsStream("/fixtures/soil/texture/test-bgs-texture-clay-1.xml");
+        FeatureInfoResponse fir = JAXB.unmarshal(is, FeatureInfoResponse.class);
+
+        return (List<F>) fir.getFields();
+      }
+    };
 
     List<SoilTextureFields> fields = testObject.getSoilTextureData(51.2, 0.1);
 
