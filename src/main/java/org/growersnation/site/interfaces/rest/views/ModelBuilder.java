@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import org.growersnation.site.SiteConfiguration;
 import org.growersnation.site.domain.repositories.UserRepository;
-import org.growersnation.site.domain.security.User;
+import org.growersnation.site.infrastructure.dto.security.User;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;

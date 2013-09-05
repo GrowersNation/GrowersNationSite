@@ -3,7 +3,7 @@ package org.growersnation.site.infrastructure.persistence.mongo;
 import com.google.inject.Inject;
 import com.mongodb.DB;
 import org.growersnation.site.domain.repositories.SoilDataRepository;
-import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.SoilData;
 import org.mongojack.JacksonDBCollection;
 
 /**

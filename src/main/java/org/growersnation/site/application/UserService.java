@@ -1,6 +1,6 @@
 package org.growersnation.site.application;
 
-import org.growersnation.site.domain.security.User;
+import org.growersnation.site.infrastructure.dto.security.User;
 
 import javax.validation.Valid;
 

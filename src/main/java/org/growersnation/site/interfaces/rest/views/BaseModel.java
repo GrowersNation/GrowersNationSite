@@ -1,6 +1,6 @@
 package org.growersnation.site.interfaces.rest.views;
 
-import org.growersnation.site.domain.security.User;
+import org.growersnation.site.infrastructure.dto.security.User;
 
 /**
  * <p>Base class to provide the following to views:</p>

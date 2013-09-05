@@ -8,11 +8,8 @@ import java.util.Set;
 /**
  * <p>Memento to provide the following to OpenID authentication web handling:</p>
  * <ul>
- * <li>Persistence store of </li>
+ * <li>Persistent store of OpenID discovery info between requests</li>
  * </ul>
- * <p>Example:</p>
- * <pre>
- * </pre>
  *
  * @since 0.0.1
  *         

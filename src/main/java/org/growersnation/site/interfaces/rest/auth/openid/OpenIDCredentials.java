@@ -1,7 +1,7 @@
 package org.growersnation.site.interfaces.rest.auth.openid;
 
 import com.google.common.base.Objects;
-import org.growersnation.site.domain.security.Authority;
+import org.growersnation.site.infrastructure.dto.security.Authority;
 
 import java.util.Set;
 import java.util.UUID;

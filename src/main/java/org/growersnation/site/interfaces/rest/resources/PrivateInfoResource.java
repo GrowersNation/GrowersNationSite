@@ -2,7 +2,7 @@ package org.growersnation.site.interfaces.rest.resources;
 
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.domain.security.Authority;
+import org.growersnation.site.infrastructure.dto.security.Authority;
 import org.growersnation.site.interfaces.rest.api.security.UserDto;
 import org.growersnation.site.interfaces.rest.auth.annotation.RestrictedTo;
 import org.growersnation.site.interfaces.rest.views.BaseModel;

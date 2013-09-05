@@ -1,7 +1,7 @@
 {
   "name": "Growing Degree Days 30 year",
-  "description": "org.growersnation.site.domain.thirdparty.metoffice.gdd.GDD over 30 years with 5 degree baseline smoothed over 30 years",
-  "valueUnit": "org.growersnation.site.domain.thirdparty.metoffice.gdd.GDD",
+  "description": "org.growersnation.site.infrastructure.dto.thirdparty.metoffice.gdd.GDD over 30 years with 5 degree baseline smoothed over 30 years",
+  "valueUnit": "org.growersnation.site.infrastructure.dto.thirdparty.metoffice.gdd.GDD",
   "locations": [
       {
         "loc": [-6.286, 49.933],

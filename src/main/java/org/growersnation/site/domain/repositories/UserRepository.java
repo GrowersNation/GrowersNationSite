@@ -1,7 +1,7 @@
 package org.growersnation.site.domain.repositories;
 
 import com.google.common.base.Optional;
-import org.growersnation.site.domain.security.User;
+import org.growersnation.site.infrastructure.dto.security.User;
 import org.growersnation.site.interfaces.rest.api.PaginationData;
 
 import java.util.List;

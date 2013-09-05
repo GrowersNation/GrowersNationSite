@@ -58,6 +58,16 @@ $ mongo
 
 If you are behind a firewall you will need to set the proxy. This is configured in the YAML file.
 
+## API overview
+
+All URIs are relative to `http://localhost:9090`
+
+`GET /`
+
+Provide the HTML
+
+
+
 ## Where does the ASCII art come from?
 
 The ASCII art for the startup banner was created using the online tool available at

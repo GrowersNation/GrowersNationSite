@@ -1,8 +1,8 @@
 package org.growersnation.site.infrastructure.persistence.dao.soil.http;
 
 import org.growersnation.site.infrastructure.persistence.dao.BaseHttpDao;
-import org.growersnation.site.domain.thirdparty.bgs.soil.texture.FeatureInfoResponse;
-import org.growersnation.site.domain.thirdparty.bgs.soil.texture.SoilTextureFields;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.texture.FeatureInfoResponse;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.texture.SoilTextureFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.mongodb.DB;
 import org.growersnation.site.domain.repositories.UserRepository;
-import org.growersnation.site.domain.security.User;
+import org.growersnation.site.infrastructure.dto.security.User;
 import org.growersnation.site.interfaces.rest.api.PaginationData;
 import org.mongojack.JacksonDBCollection;
 

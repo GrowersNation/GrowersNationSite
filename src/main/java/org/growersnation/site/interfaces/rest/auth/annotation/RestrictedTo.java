@@ -1,6 +1,6 @@
 package org.growersnation.site.interfaces.rest.auth.annotation;
 
-import org.growersnation.site.domain.security.Authority;
+import org.growersnation.site.infrastructure.dto.security.Authority;
 
 import java.lang.annotation.*;
 

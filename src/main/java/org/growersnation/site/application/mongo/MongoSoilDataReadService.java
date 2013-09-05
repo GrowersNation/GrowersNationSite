@@ -5,7 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
 import org.growersnation.site.application.SoilDataReadService;
-import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.SoilData;
 import org.mongojack.JacksonDBCollection;
 
 import java.util.List;

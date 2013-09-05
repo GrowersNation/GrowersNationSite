@@ -1,7 +1,7 @@
 package org.growersnation.site.infrastructure.persistence.dao;
 
 import com.google.common.base.Charsets;
-import org.growersnation.site.domain.thirdparty.bgs.soil.FieldAccessor;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.FieldAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

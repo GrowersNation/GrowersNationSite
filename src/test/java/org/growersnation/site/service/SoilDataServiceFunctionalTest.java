@@ -16,7 +16,7 @@ import org.growersnation.site.application.mongo.DefaultSoilDataService;
 import org.growersnation.site.application.mongo.MongoSoilDataReadService;
 import org.growersnation.site.domain.repositories.SoilDataRepository;
 import org.growersnation.site.infrastructure.persistence.mongo.MongoSoilDataRepository;
-import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.SoilData;
 import org.growersnation.site.interfaces.rest.api.soil.SoilDataFaker;
 import org.junit.After;
 import org.junit.Before;

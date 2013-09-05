@@ -3,7 +3,7 @@ package org.growersnation.site.interfaces.rest.resources;
 import com.google.common.base.Splitter;
 import com.yammer.dropwizard.jersey.caching.CacheControl;
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.domain.thirdparty.metoffice.gdd.GDDDocument;
+import org.growersnation.site.infrastructure.dto.thirdparty.metoffice.gdd.GDDDocument;
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.PHBulkDensityDao;
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.SoilTextureDao;
 import org.growersnation.site.infrastructure.persistence.dao.soil.http.TopsoilCarbonDao;

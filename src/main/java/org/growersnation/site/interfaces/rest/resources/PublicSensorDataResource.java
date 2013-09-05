@@ -1,7 +1,7 @@
 package org.growersnation.site.interfaces.rest.resources;
 
 import com.yammer.metrics.annotation.Timed;
-import org.growersnation.site.domain.thirdparty.sensor.SensorData;
+import org.growersnation.site.infrastructure.dto.thirdparty.sensor.SensorData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

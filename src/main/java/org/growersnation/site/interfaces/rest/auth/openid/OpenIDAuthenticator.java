@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.yammer.dropwizard.auth.AuthenticationException;
 import com.yammer.dropwizard.auth.Authenticator;
 import org.growersnation.site.domain.repositories.UserRepository;
-import org.growersnation.site.domain.security.User;
+import org.growersnation.site.infrastructure.dto.security.User;
 
 /**
  * <p>Authenticator to provide the following to application:</p>

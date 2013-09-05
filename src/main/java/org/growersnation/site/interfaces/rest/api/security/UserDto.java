@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import org.growersnation.site.domain.repositories.Persistable;
-import org.growersnation.site.domain.security.Authority;
+import org.growersnation.site.infrastructure.dto.security.Authority;
 import org.growersnation.site.infrastructure.utils.ObjectUtils;
 import org.growersnation.site.interfaces.rest.auth.openid.DiscoveryInformationMemento;
 

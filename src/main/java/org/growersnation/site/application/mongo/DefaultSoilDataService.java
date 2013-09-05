@@ -3,7 +3,7 @@ package org.growersnation.site.application.mongo;
 import com.google.inject.Inject;
 import org.growersnation.site.application.SoilDataService;
 import org.growersnation.site.domain.repositories.SoilDataRepository;
-import org.growersnation.site.domain.thirdparty.bgs.soil.SoilData;
+import org.growersnation.site.infrastructure.dto.thirdparty.bgs.soil.SoilData;
 
 /**
  * <p>Default implementation of {@link SoilDataService}</p>

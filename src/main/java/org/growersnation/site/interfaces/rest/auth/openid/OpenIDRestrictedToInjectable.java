@@ -7,8 +7,8 @@ import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.server.impl.inject.AbstractHttpContextInjectable;
 import com.yammer.dropwizard.auth.AuthenticationException;
 import org.growersnation.site.SiteConfiguration;
-import org.growersnation.site.domain.security.Authority;
-import org.growersnation.site.domain.security.User;
+import org.growersnation.site.infrastructure.dto.security.Authority;
+import org.growersnation.site.infrastructure.dto.security.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
