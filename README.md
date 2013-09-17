@@ -16,6 +16,9 @@ This is a very lightweight and highly scalable approach that facilitates Agile d
 
 All builds are done with Maven and the endpoints serve JSON. 
 
+The application relies on a running instance of MongoDB for Growing Degree Days (GDD) data but
+the soil data is available from the British Geological Survey (BGS) servers.
+
 ## Notation
 
 <project root> - The root directory of the project as checked out through git
@@ -29,6 +32,13 @@ From the console you can do the following
     cd <project root>
     mvn clean install
     java -jar target/growers-nation-develop-SNAPSHOT.jar server gn.yml
+
+## Verify endpoints
+
+Running locally, try the following links (the port is set in the `gn.yml` file): 
+
+* [Show a HTML site](http://localhost:9090/)
+* [Show some soil data](http://localhost:9090/soildata?location=51.65,0.1)
 
 # Installing MongoDB
 
